@@ -19,6 +19,11 @@ jobs:
           node-version: '14'
       - name: Install Dependencies
         run: npm install
+      - name: Create Build Info
+        run: |
+          date > src/resource/builddate
+          echo ${{ steps.vars.outputs.sha_short }} > src/resource/version
+
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
