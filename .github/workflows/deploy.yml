@@ -8,6 +8,10 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: functions
     steps:
       - uses: actions/checkout@master
       - uses: actions/setup-node@v2
