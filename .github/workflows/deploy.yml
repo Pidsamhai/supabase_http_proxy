@@ -7,10 +7,9 @@ on:
 jobs:
   deploy:
     name: Deploy
-    needs: build
     runs-on: ubuntu-latest
     steps:
-        uses: actions/checkout@master
+      - uses: actions/checkout@master
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
