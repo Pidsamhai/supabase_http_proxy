@@ -10,6 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Install Dependencies
+        run: npm install
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
