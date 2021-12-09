@@ -6,13 +6,10 @@ import 'package:proxy_api_gui/cubit/login_cubit.dart';
 import 'package:proxy_api_gui/repository/login_repository.dart';
 import 'package:proxy_api_gui/router/app_router.dart';
 import 'package:qlevar_router/qlevar_router.dart';
-import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp();
   final auth = FirebaseAuth.instance;
   await auth.setPersistence(Persistence.LOCAL);
   QR.setUrlStrategy();
