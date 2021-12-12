@@ -1,8 +1,8 @@
 import * as functions from "firebase-functions";
-import {initializeApp} from "firebase-admin";
+import { initializeApp } from "firebase-admin";
 import * as express from "express";
-import {Template} from "./template";
-import axios, {Method} from "axios";
+import { Template } from "./template";
+import axios, { Method } from "axios";
 import * as fs from "fs";
 import * as cors from "cors";
 
@@ -29,7 +29,7 @@ server.get("/", (_, res) => {
 server.all("/:template/*", async (req, res) => {
   try {
     const template: Template = <Template>(await db.ref("template")
-        .child(req.params.template).get()).toJSON();
+      .child(req.params.template).get()).toJSON();
     const path = req.path.replace(`/${req.params.template}/`, "");
     const url = `${template.baseUrl}${path}`;
     const query = {};
@@ -38,19 +38,19 @@ server.all("/:template/*", async (req, res) => {
     Object.assign(header, req.headers, template.headers);
     const result = await axios({
       method: req.method as Method,
-      headers: template.params,
+      headers: header,
       url: url,
       params: query,
     });
     return res.status(result.status).json(result.data);
   } catch (err) {
     console.log(err);
-    return res.status(404).json({message: "Not Found"});
+    return res.status(404).json({ message: "Not Found" });
   }
 });
 
 server.use((_, res) => {
-  res.status(404).json({message: "Not Found"});
+  res.status(404).json({ message: "Not Found" });
 });
 
 export const api = functions.region("asia-southeast1").https.onRequest(server);
