@@ -89,7 +89,7 @@ class _TemplateEditFormState extends State<TemplateEditForm> {
       descriptions: _descriptionController.text,
       baseUrl: _baseUrlController.text,
       headers: headers,
-      params: headers,
+      params: params,
     );
     if (widget.isEditForm) {
       template.uid = widget.id!;

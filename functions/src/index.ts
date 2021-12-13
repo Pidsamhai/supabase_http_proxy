@@ -1,3 +1,4 @@
+"use strict";
 import * as functions from "firebase-functions";
 import {initializeApp} from "firebase-admin";
 import * as express from "express";
@@ -32,10 +33,14 @@ server.all("/:template/*", async (req, res) => {
         .child(req.params.template).get()).toJSON();
     const path = req.path.replace(`/${req.params.template}/`, "");
     const url = `${template.baseUrl}${path}`;
-    const query = {};
-    const header = {};
+    const query: Record<string, string> = {};
+    const header: Record<string, string> = {};
     Object.assign(query, req.query, template.params);
     Object.assign(header, req.headers, template.headers);
+
+    delete header["host"];
+    delete header["Host"];
+
     console.info(
         {
           "template_id": req.params.template,
@@ -43,6 +48,7 @@ server.all("/:template/*", async (req, res) => {
           "path": path,
           "header": req.headers,
           "query": req.query,
+          "url": url,
         }
     );
     const result = await axios({
@@ -53,7 +59,6 @@ server.all("/:template/*", async (req, res) => {
     });
     return res.status(result.status).json(result.data);
   } catch (err) {
-    console.log(err);
     return res.status(404).json({message: "Not Found"});
   }
 });
