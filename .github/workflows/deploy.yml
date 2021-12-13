@@ -50,7 +50,7 @@ jobs:
       run: flutter pub get
     
     - name: Set Base Url
-      run: echo "const baseApiUrl = = $BASE_API_URL" > utils/const.dart
+      run: echo "const baseApiUrl = $BASE_API_URL" > lib/utils/const.dart
       env:
         BASE_API_URL: "${{ secrets.BASE_API_URL }}"
 
