@@ -9,11 +9,11 @@ class LoginCubit extends Cubit<LoginState> {
 
   Future login(String email, String password) async {
     try {
-      final user = await _repository.login(
+      await _repository.login(
         email: email,
         password: password,
       );
-      emit(const LoginSuccess());
+      emit(LoginSuccess());
     } on FirebaseAuthException catch (e) {
       emit(LoginFailure(e.message ?? "Error"));
     }

@@ -48,7 +48,7 @@ class TemplateCard extends StatelessWidget {
                     Opacity(
                       opacity: 0.4,
                       child: Text(
-                        _template.descriptions,
+                        _template.descriptions ?? "",
                         style: Theme.of(context)
                             .textTheme
                             .subtitle1

@@ -18,7 +18,7 @@ class HeaderParams {
 class Template {
   late String uid;
   late String name;
-  late String descriptions;
+  String? descriptions;
   Map<String, dynamic>? headers;
   Map<String, dynamic>? params;
 

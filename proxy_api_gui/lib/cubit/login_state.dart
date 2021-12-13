@@ -9,7 +9,7 @@ class LoginInitial extends LoginState {
 }
 
 class LoginSuccess extends LoginState {
-  const LoginSuccess();
+  LoginSuccess();
 }
 
 class LoginFailure extends LoginState {

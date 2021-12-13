@@ -45,7 +45,7 @@ class _TemplateEditFormState extends State<TemplateEditForm> {
           .read<ApiTemplateRepository>()
           .getTemplate(id: widget.id!);
       _nameController.text = value.name;
-      _descriptionController.text = value.descriptions;
+      _descriptionController.text = value.descriptions ?? "";
       _headerWidgets.addAll(value.readableHeaders.map((e) => HeaderParamsWidget(
             headerParams: e,
             onRemove: _removeHeadersWidget,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:proxy_api_gui/cubit/api_template_cubit.dart';
 import 'package:proxy_api_gui/model/template.dart';
 import 'package:proxy_api_gui/repository/api_template_repository.dart';
 import 'package:proxy_api_gui/repository/auth_repository.dart';
@@ -21,7 +20,6 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    context.read<ApiTemplateCubit>().init();
   }
 
   Future _signOut() async {
@@ -130,7 +128,9 @@ class _MainPageState extends State<MainPage> {
                 child: StreamBuilder(
                   stream: context.read<ApiTemplateRepository>().templates(),
                   builder: (context, AsyncSnapshot<List<Template>> state) {
-                    return ListView.builder(
+                    return !state.hasData || state.data?.isEmpty == true ? const Center(
+                      child: Text("No template"),
+                    ) : ListView.builder(
                       scrollDirection: Axis.vertical,
                       itemCount: state.data?.length ?? 0,
                       itemBuilder: (context, index) => TemplateCard(

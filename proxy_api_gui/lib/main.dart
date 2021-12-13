@@ -3,7 +3,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:proxy_api_gui/cubit/api_template_cubit.dart';
 import 'package:proxy_api_gui/cubit/login_cubit.dart';
 import 'package:proxy_api_gui/repository/api_template_repository.dart';
 import 'package:proxy_api_gui/repository/auth_repository.dart';
@@ -42,7 +41,6 @@ void main() async {
         Provider<AuthRepository>(create: (context) => AuthRepository(auth)),
         Provider<ApiTemplateRepository>(create: (context) => ApiTemplateRepository(database)),
         Provider<LoginCubit>(create: (context) => LoginCubit(context.read())),
-        Provider<ApiTemplateCubit>(create: (context) => ApiTemplateCubit(context.read())),
       ],
     ),
   );
