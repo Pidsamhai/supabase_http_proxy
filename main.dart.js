@@ -62734,14 +62734,14 @@ m=o.d
 if(m==null)m=""
 s=K.ax(b).a5.r
 r=t.F
-return new V.BI(16,R.adx(!1,!0,new T.dc(C.cZ,T.mO(H.a([new T.iS(1,C.c7,T.BY(H.a([n,C.vH,T.Xt(!1,L.ds(m,p,p,p,s==null?p:s.KA(C.bq),p,p),0.4),C.vH,L.ds("URL : http://localhost:49576/"+o.gip(o),p,p,p,p,p,p)],r),C.cV,C.aB,C.aC),p),T.mO(H.a([B.Dt(C.Ai,q.c,p),B.Dt(C.Ah,q.d,p),B.Dt(C.Ag,new R.a3b(q,b),p)],r),C.aH,C.aB,C.aC)],r),C.aH,C.aB,C.aC),p),p,!0,p,p,p,p,p,p,p,p,p,new R.a3c(),p,p,p),p)}}
+return new V.BI(16,R.adx(!1,!0,new T.dc(C.cZ,T.mO(H.a([new T.iS(1,C.c7,T.BY(H.a([n,C.vH,T.Xt(!1,L.ds(m,p,p,p,s==null?p:s.KA(C.bq),p,p),0.4),C.vH,L.ds("URL : https://asia-southeast1-proxy-api-dbf94.cloudfunctions.net/api/"+o.gip(o),p,p,p,p,p,p)],r),C.cV,C.aB,C.aC),p),T.mO(H.a([B.Dt(C.Ai,q.c,p),B.Dt(C.Ah,q.d,p),B.Dt(C.Ag,new R.a3b(q,b),p)],r),C.aH,C.aB,C.aC)],r),C.aH,C.aB,C.aC),p),p,!0,p,p,p,p,p,p,p,p,p,new R.a3c(),p,p,p),p)}}
 R.a3c.prototype={
 $0(){var s=t.z
 return P.t(s,s)},
 $S:0}
 R.a3b.prototype={
 $0(){var s=this.a.e
-T.lH(new T.iI("http://localhost:49576/"+s.gip(s)))
+T.lH(new T.iI("https://asia-southeast1-proxy-api-dbf94.cloudfunctions.net/api/"+s.gip(s)))
 s=this.b.U(t.Pu)
 s.toString
 s.f.o7(C.GQ)
