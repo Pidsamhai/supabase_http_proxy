@@ -38,9 +38,6 @@ server.all("/:template/*", async (req, res) => {
     Object.assign(query, req.query, template.params);
     Object.assign(header, req.headers, template.headers);
 
-    delete header["host"];
-    delete header["Host"];
-
     console.info(
         {
           "template_id": req.params.template,
@@ -57,9 +54,10 @@ server.all("/:template/*", async (req, res) => {
       url: url,
       params: query,
     });
-    return res.status(result.status).json(result.data);
+    res.set(result.headers);
+    res.status(result.status).json(result.data);
   } catch (err) {
-    return res.status(404).json({message: "Not Found"});
+    res.status(404).json({message: "Not Found"});
   }
 });
 
