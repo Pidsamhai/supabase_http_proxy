@@ -36,6 +36,15 @@ server.all("/:template/*", async (req, res) => {
     const header = {};
     Object.assign(query, req.query, template.params);
     Object.assign(header, req.headers, template.headers);
+    console.info(
+      {
+        "template_id": req.params.template,
+        "method": req.method,
+        "path": path,
+        "header": req.headers,
+        "query": req.query
+      }
+    )
     const result = await axios({
       method: req.method as Method,
       headers: header,
