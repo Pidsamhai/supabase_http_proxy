@@ -17,7 +17,7 @@ class AppRouter {
       QRoute(
         name: login,
         path: "/login",
-        builder: () => LoginPage(),
+        builder: () => const LoginPage(),
         middleware: [
           LoggedMiddleWare(context.read()),
         ],
@@ -36,9 +36,7 @@ class AppRouter {
         name: createTemplate,
         path: "/create",
         builder: () => const CreateTemplatePage(),
-        middleware: [
-          AuthMiddleWare(context.read())
-        ],
+        middleware: [AuthMiddleWare(context.read())],
         pageType: const QMaterialPage(),
       ),
       QRoute(

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:proxy_api_gui/cubit/api_template_cubit.dart';
 import 'package:proxy_api_gui/model/template.dart';
 import 'package:proxy_api_gui/repository/api_template_repository.dart';
+import 'package:proxy_api_gui/repository/auth_repository.dart';
 import 'package:proxy_api_gui/router/app_router.dart';
 import 'package:proxy_api_gui/widget/custom_dialog.dart';
 import 'package:proxy_api_gui/widget/dialog.dart';
@@ -21,6 +22,37 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
     context.read<ApiTemplateCubit>().init();
+  }
+
+  Future _signOut() async {
+    QR.show(progressDialog("Signout..."));
+    await context.read<AuthRepository>().signOut();
+    Navigator.of(context, rootNavigator: true).pop();
+    QR.navigator.replaceAllWithName(AppRouter.login);
+  }
+
+  _signOutDialog() {
+    QR.show(
+      CustomDialog(
+        widget: (pop) => AlertDialog(
+          title: const Text("Confirmation"),
+          content: const Text("You want to signout"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                pop.call();
+                _signOut();
+              },
+              child: const Text("OK"),
+            ),
+            TextButton(
+              onPressed: () => pop.call(),
+              child: const Text("CANCEL"),
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   Future _deleteTemplate(String id) async {
@@ -113,16 +145,25 @@ class _MainPageState extends State<MainPage> {
             ),
           ],
         ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () => QR.toName(AppRouter.createTemplate),
-          label: const Text("Add Template"),
-          icon: const Icon(Icons.add),
+        floatingActionButton: Wrap(
+          direction: Axis.vertical,
+          crossAxisAlignment: WrapCrossAlignment.end,
+          spacing: 8,
+          children: [
+            FloatingActionButton.extended(
+              heroTag: UniqueKey(),
+              onPressed: _signOutDialog,
+              label: const Text("Signout"),
+              icon: const Icon(Icons.power_settings_new),
+              backgroundColor: Colors.red,
+            ),
+            FloatingActionButton.extended(
+              heroTag: UniqueKey(),
+              onPressed: () => QR.toName(AppRouter.createTemplate),
+              label: const Text("Add Template"),
+              icon: const Icon(Icons.add),
+            ),
+          ],
         ));
   }
 }
-// FloatingActionButton.extended(
-//               onPressed: () => QR.toName(AppRouter.createTemplate),
-//               label: const Text("Signout"),
-//               icon: const Icon(Icons.power_settings_new),
-//               backgroundColor: Colors.red,
-//             ),
