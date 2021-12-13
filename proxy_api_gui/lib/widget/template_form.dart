@@ -24,6 +24,7 @@ class _TemplateEditFormState extends State<TemplateEditForm> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
+  final _baseUrlController = TextEditingController();
   final List<HeaderParamsWidget> _headerWidgets = [];
   final List<HeaderParamsWidget> _paramWidgets = [];
 
@@ -46,6 +47,7 @@ class _TemplateEditFormState extends State<TemplateEditForm> {
           .getTemplate(id: widget.id!);
       _nameController.text = value.name;
       _descriptionController.text = value.descriptions ?? "";
+      _baseUrlController.text = value.baseUrl;
       _headerWidgets.addAll(value.readableHeaders.map((e) => HeaderParamsWidget(
             headerParams: e,
             onRemove: _removeHeadersWidget,
@@ -85,6 +87,7 @@ class _TemplateEditFormState extends State<TemplateEditForm> {
     final template = Template(
       name: _nameController.text,
       descriptions: _descriptionController.text,
+      baseUrl: _baseUrlController.text,
       headers: headers,
       params: headers,
     );
@@ -115,6 +118,19 @@ class _TemplateEditFormState extends State<TemplateEditForm> {
                   validator: (String? value) {
                     return (value != null && value.isEmpty)
                         ? 'Name is required *'
+                        : null;
+                  },
+                ),
+                const SizedBox.square(dimension: 16),
+                TextFormField(
+                  controller: _baseUrlController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'BaseUrl',
+                  ),
+                  validator: (String? value) {
+                    return (value != null && value.isEmpty)
+                        ? 'BaseUrl is required *'
                         : null;
                   },
                 ),

@@ -18,6 +18,7 @@ class HeaderParams {
 class Template {
   late String uid;
   late String name;
+  late String baseUrl;
   String? descriptions;
   Map<String, dynamic>? headers;
   Map<String, dynamic>? params;
@@ -30,7 +31,8 @@ class Template {
 
   Template({
     required this.name,
-    required this.descriptions,
+    this.descriptions,
+    required this.baseUrl,
     required this.headers,
     required this.params,
   });
@@ -38,6 +40,7 @@ class Template {
   Template.fromJson(this.uid, Map<String, dynamic> json) {
     name = json['name'];
     descriptions = json['descriptions'];
+    baseUrl = json['baseUrl'];
     headers = json["headers"];
     params = json["params"];
   }
@@ -46,6 +49,7 @@ class Template {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['name'] = name;
     data['descriptions'] = descriptions;
+    data['baseUrl'] = baseUrl;
     data['headers'] = headers;
     data['params'] = params;
     return data;
