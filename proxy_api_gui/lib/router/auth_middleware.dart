@@ -1,25 +1,20 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:proxy_api_gui/repository/auth_repository.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 class AuthMiddleWare extends QMiddleware {
-  final _auth = FirebaseAuth.instance;
+  final AuthRepository _repository;
+  AuthMiddleWare(this._repository);
   @override
   Future<String?> redirectGuard(String path) async {
-    return _auth.currentUser == null ? "/login" : null;
+    return await _repository.currentUser() == null ? "/login" : null;
   }
 }
 
 class LoggedMiddleWare extends QMiddleware {
-  final _auth = FirebaseAuth.instance;
+  final AuthRepository _repository;
+  LoggedMiddleWare(this._repository);
   @override
   Future<String?> redirectGuard(String path) async {
-    return _auth.currentUser != null ? "/" : null;
+    return await _repository.currentUser() != null ? "/" : null;
   }
 }
-  // static Future<FirebaseUser> getFirebaseUser() async {
-  //   FirebaseUser firebaseUser = await FirebaseAuth.instance.currentUser();
-  //   if (firebaseUser == null) {
-  //     firebaseUser = await FirebaseAuth.instance.onAuthStateChanged.first;
-  //   }
-  //   return firebaseUser;
-  // }
