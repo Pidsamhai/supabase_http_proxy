@@ -99,122 +99,124 @@ class _TemplateEditFormState extends State<TemplateEditForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 500),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextFormField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Name',
+    return SingleChildScrollView(
+      child: Form(
+        key: _formKey,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Center(
+            child: Container(
+              constraints: const BoxConstraints(maxWidth: 500),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextFormField(
+                    controller: _nameController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Name',
+                    ),
+                    validator: (String? value) {
+                      return (value != null && value.isEmpty)
+                          ? 'Name is required *'
+                          : null;
+                    },
                   ),
-                  validator: (String? value) {
-                    return (value != null && value.isEmpty)
-                        ? 'Name is required *'
-                        : null;
-                  },
-                ),
-                const SizedBox.square(dimension: 16),
-                TextFormField(
-                  controller: _baseUrlController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'BaseUrl',
+                  const SizedBox.square(dimension: 16),
+                  TextFormField(
+                    controller: _baseUrlController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'BaseUrl',
+                    ),
+                    validator: (String? value) {
+                      return (value != null && value.isEmpty)
+                          ? 'BaseUrl is required *'
+                          : null;
+                    },
                   ),
-                  validator: (String? value) {
-                    return (value != null && value.isEmpty)
-                        ? 'BaseUrl is required *'
-                        : null;
-                  },
-                ),
-                const SizedBox.square(dimension: 16),
-                TextField(
-                  controller: _descriptionController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: "Descriptions",
+                  const SizedBox.square(dimension: 16),
+                  TextField(
+                    controller: _descriptionController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: "Descriptions",
+                    ),
+                    keyboardType: TextInputType.visiblePassword,
                   ),
-                  keyboardType: TextInputType.visiblePassword,
-                ),
-                const SizedBox.square(dimension: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text("Headers"),
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _headerWidgets.add(HeaderParamsWidget(
-                            onRemove: _removeHeadersWidget,
-                          ));
-                        });
-                      },
-                      child: const Text("add"),
-                    )
-                  ],
-                ),
-                const SizedBox.square(dimension: 16),
-                Container(
-                  width: 500,
-                  height: 250,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    color: Colors.grey.shade300,
+                  const SizedBox.square(dimension: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text("Headers"),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _headerWidgets.add(HeaderParamsWidget(
+                              onRemove: _removeHeadersWidget,
+                            ));
+                          });
+                        },
+                        child: const Text("add"),
+                      )
+                    ],
                   ),
-                  padding: const EdgeInsets.all(8),
-                  child: ListView.builder(
-                    controller: ScrollController(),
-                    itemCount: _headerWidgets.length,
-                    itemBuilder: (context, index) => _headerWidgets[index],
+                  const SizedBox.square(dimension: 16),
+                  Container(
+                    width: 500,
+                    height: 250,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      color: Colors.grey.shade300,
+                    ),
+                    padding: const EdgeInsets.all(8),
+                    child: ListView.builder(
+                      controller: ScrollController(),
+                      itemCount: _headerWidgets.length,
+                      itemBuilder: (context, index) => _headerWidgets[index],
+                    ),
                   ),
-                ),
-                const SizedBox.square(dimension: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text("Params"),
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _paramWidgets.add(HeaderParamsWidget(
-                            onRemove: _removeParamsWidget,
-                          ));
-                        });
-                      },
-                      child: const Text("add"),
-                    )
-                  ],
-                ),
-                const SizedBox.square(dimension: 16),
-                Container(
-                  width: 500,
-                  height: 250,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    color: Colors.grey.shade300,
+                  const SizedBox.square(dimension: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text("Params"),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _paramWidgets.add(HeaderParamsWidget(
+                              onRemove: _removeParamsWidget,
+                            ));
+                          });
+                        },
+                        child: const Text("add"),
+                      )
+                    ],
                   ),
-                  padding: const EdgeInsets.all(8),
-                  child: ListView.builder(
-                    controller: ScrollController(),
-                    itemCount: _paramWidgets.length,
-                    itemBuilder: (context, index) => _paramWidgets[index],
+                  const SizedBox.square(dimension: 16),
+                  Container(
+                    width: 500,
+                    height: 250,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      color: Colors.grey.shade300,
+                    ),
+                    padding: const EdgeInsets.all(8),
+                    child: ListView.builder(
+                      controller: ScrollController(),
+                      itemCount: _paramWidgets.length,
+                      itemBuilder: (context, index) => _paramWidgets[index],
+                    ),
                   ),
-                ),
-                const SizedBox.square(dimension: 16),
-                SizedBox(
-                  width: double.maxFinite,
-                  height: 50,
-                  child: ElevatedButton(
-                      onPressed: _save, child: const Text("SAVE")),
-                )
-              ],
+                  const SizedBox.square(dimension: 16),
+                  SizedBox(
+                    width: double.maxFinite,
+                    height: 50,
+                    child: ElevatedButton(
+                        onPressed: _save, child: const Text("SAVE")),
+                  )
+                ],
+              ),
             ),
           ),
         ),

@@ -30,8 +30,25 @@ class CreateTemplatePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: TemplateEditForm(
-        onSubmit: (template) => _createTemplate(context, template),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              "Create new template",
+              style: Theme.of(context)
+                  .textTheme
+                  .headline5
+                  ?.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ),
+          Expanded(
+            child: TemplateEditForm(
+              onSubmit: (template) => _createTemplate(context, template),
+            ),
+          ),
+        ],
       ),
     );
   }

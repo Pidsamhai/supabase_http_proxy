@@ -16,13 +16,14 @@ class EditTemplatePage extends StatefulWidget {
 
 class _EditTemplatePageState extends State<EditTemplatePage> {
   Future _saveChange(Template template) async {
-
     QR.show(progressDialog("Save change..."));
 
     await Future.delayed(const Duration(seconds: 2));
 
     try {
-      await context.read<ApiTemplateRepository>().updateTemplate(template: template);
+      await context
+          .read<ApiTemplateRepository>()
+          .updateTemplate(template: template);
       Navigator.of(context, rootNavigator: true).pop();
       await Future.delayed(const Duration(milliseconds: 100));
       QR.back();
@@ -37,10 +38,27 @@ class _EditTemplatePageState extends State<EditTemplatePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: TemplateEditForm(
-        id: widget._id,
-        isEditForm: true,
-        onSubmit: (template) => _saveChange(template),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              "Edit template",
+              style: Theme.of(context)
+                  .textTheme
+                  .headline5
+                  ?.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ),
+          Expanded(
+            child: TemplateEditForm(
+              id: widget._id,
+              isEditForm: true,
+              onSubmit: (template) => _saveChange(template),
+            ),
+          ),
+        ],
       ),
     );
   }
