@@ -34,6 +34,7 @@ class TemplateCard extends StatelessWidget {
             children: [
               Flexible(
                 flex: 1,
+                fit: FlexFit.tight,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
