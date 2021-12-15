@@ -46,7 +46,7 @@ class AppRouter {
         middleware: [
           AuthMiddleWare(context.read()),
         ],
-        pageType: const QFadePage(),
+        pageType: const QMaterialPage(),
       ),
     ];
   }
