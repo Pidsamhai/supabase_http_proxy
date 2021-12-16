@@ -72,7 +72,11 @@ server.all("/:template/*", async (req, res) => {
       params: template.params,
     });
 
-    res.set("Content-type", result.headers["Content-type"]);
+    if(result.headers["Content-type"] || result.headers["content-type"]) {
+      res.set("Content-type", result.headers["Content-type"] ?? result.headers["content-type"]);
+    }
+    
+    console.log(result.headers)
     res.status(result.status).send(result.data);
   } catch (err) {
     console.log(err);
