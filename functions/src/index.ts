@@ -6,6 +6,9 @@ import {Template} from "./template";
 import axios, {Method} from "axios";
 import * as fs from "fs";
 import * as cors from "cors";
+import * as apicache from 'apicache';
+import * as rateLimit from 'express-rate-limit';
+import { TemplateNotFound } from './exception'
 
 const admin = initializeApp();
 const server = express();
@@ -16,7 +19,15 @@ const builddatePath = __dirname + "/../src/resource/builddate";
 const version = fs.readFileSync(versionPath, "utf-8") || "UNKNOWN VERSION";
 const build = fs.readFileSync(builddatePath, "utf-8") || "UNKNOWN BUILDDATE";
 
+const cache = apicache.middleware;
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100
+});
+
 server.use(cors());
+server.use(cache("5 minutes"));
+server.use(limiter);
 
 server.get("/", (_, res) => {
   res.json({
@@ -29,14 +40,19 @@ server.get("/", (_, res) => {
 
 server.all("/:template/*", async (req, res) => {
   try {
-    const template: Template = <Template>(await db.ref("template")
-        .child(req.params.template).get()).toJSON();
+    const doc = await db.ref("template")
+        .child(req.params.template).get();
+    if(!doc.exists()) {
+      throw new TemplateNotFound(req.params.template);
+    }
+    const template: Template = <Template> doc.toJSON();
     const path = req.path.replace(`/${req.params.template}/`, "");
     const url = `${template.baseUrl}${path}`;
     const query: Record<string, string> = {};
     const header: Record<string, string> = {};
+
     Object.assign(query, req.query, template.params);
-    Object.assign(header, req.headers, template.headers);
+    Object.assign(header, template.headers);
 
     console.info(
         {
@@ -48,16 +64,23 @@ server.all("/:template/*", async (req, res) => {
           "url": url,
         }
     );
+
     const result = await axios({
       method: req.method as Method,
-      headers: header,
+      headers: template.headers,
       url: url,
-      params: query,
+      params: template.params,
     });
-    res.set(result.headers);
-    res.status(result.status).json(result.data);
+
+    res.set("Content-type", result.headers["Content-type"]);
+    res.status(result.status).send(result.data);
   } catch (err) {
-    res.status(404).json({message: "Not Found"});
+    console.log(err);
+    if(err instanceof TemplateNotFound) {
+      res.status(404).json({message: err.message});
+    } else {
+      res.status(404).json({message: "Not Found"});
+    }
   }
 });
 
