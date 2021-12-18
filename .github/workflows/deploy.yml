@@ -21,7 +21,7 @@ jobs:
       - name: Create Build Info
         run: |
           date > src/resource/builddate
-          echo ${{ steps.vars.outputs.sha_short }} > src/resource/version
+          echo ${{ github.ref_name }} > src/resource/version
 
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
