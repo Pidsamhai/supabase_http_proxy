@@ -13,7 +13,7 @@ import 'package:firebase_database/firebase_database.dart';
 
 Future<FirebaseAuth> provideFirebaseAuth() async {
   final auth = FirebaseAuth.instance;
-  await auth.setPersistence(Persistence.LOCAL);
+  await auth.setPersistence(Persistence.SESSION);
   if (kDebugMode) {
     auth.useAuthEmulator("127.0.0.1", 9099);
   }
