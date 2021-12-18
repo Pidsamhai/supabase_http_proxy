@@ -6,9 +6,9 @@ import {Template} from "./template";
 import axios, {Method} from "axios";
 import * as fs from "fs";
 import * as cors from "cors";
-import * as apicache from 'apicache';
-import * as rateLimit from 'express-rate-limit';
-import { TemplateNotFound } from './exception'
+import * as apicache from "apicache";
+import * as rateLimit from "express-rate-limit";
+import {TemplateNotFound} from "./exception";
 
 const admin = initializeApp();
 const server = express();
@@ -22,7 +22,7 @@ const build = fs.readFileSync(builddatePath, "utf-8") || "UNKNOWN BUILDDATE";
 const cache = apicache.middleware;
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100
+  max: 100,
 });
 
 server.use(cors());
@@ -42,7 +42,7 @@ server.all("/:template/*", async (req, res) => {
   try {
     const doc = await db.ref("template")
         .child(req.params.template).get();
-    if(!doc.exists()) {
+    if (!doc.exists()) {
       throw new TemplateNotFound(req.params.template);
     }
     const template: Template = <Template> doc.toJSON();
@@ -72,15 +72,18 @@ server.all("/:template/*", async (req, res) => {
       params: template.params,
     });
 
-    if(result.headers["Content-type"] || result.headers["content-type"]) {
-      res.set("Content-type", result.headers["Content-type"] ?? result.headers["content-type"]);
+    if (result.headers["Content-type"] || result.headers["content-type"]) {
+      res.set(
+          "Content-type",
+          result.headers["Content-type"] ?? result.headers["content-type"]
+      );
     }
-    
-    console.log(result.headers)
+
+    console.log(result.headers);
     res.status(result.status).send(result.data);
   } catch (err) {
     console.log(err);
-    if(err instanceof TemplateNotFound) {
+    if (err instanceof TemplateNotFound) {
       res.status(404).json({message: err.message});
     } else {
       res.status(404).json({message: "Not Found"});
