@@ -9,6 +9,7 @@ class LoginCubit extends Cubit<LoginState> {
 
   Future login(String email, String password) async {
     try {
+      emit(const LoginLoading());
       await _repository.login(
         email: email,
         password: password,

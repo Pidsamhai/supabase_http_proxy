@@ -89,6 +89,13 @@ class _PlaygroundPageState extends State<PlaygroundPage>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(
+              "Playground",
+              style: Theme.of(context)
+                  .textTheme
+                  .headline5
+                  ?.copyWith(fontWeight: FontWeight.bold),
+            ),
             SizedBox(
               height: 60,
               child: Row(

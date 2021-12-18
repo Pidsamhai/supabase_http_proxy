@@ -46,65 +46,73 @@ class _LoginPageState extends State<LoginPage> {
           }
         },
         builder: (context, state) {
-          return Container(
-            width: double.maxFinite,
+          return Padding(
             padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Proxy Api", style: Theme.of(context).textTheme.headline1),
-                const SizedBox.square(dimension: 16),
-                Container(
-                  constraints: const BoxConstraints(maxWidth: 500),
-                  child: TextField(
-                    controller: _emailTextController,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(), hintText: "Email"),
-                  ),
-                ),
-                const SizedBox.square(dimension: 16),
-                Container(
-                  constraints: const BoxConstraints(maxWidth: 500),
-                  child: TextField(
-                    controller: _passwordTextController,
-                    obscureText: _passwordVisible,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        hintText: "Password",
-                        suffixIcon: IconButton(
-                          onPressed: _togglePasswordVisibity,
-                          icon: Icon(_passwordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off),
-                        )),
-                    keyboardType: TextInputType.visiblePassword,
-                    onSubmitted: (value) => _login(),
-                  ),
-                ),
-                const SizedBox.square(dimension: 16),
-                if (state is LoginFailure) ...[
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "* ${state.message}",
-                      style: const TextStyle(color: Colors.red),
+            child: Center(
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 500),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Proxy Api",
+                        style: Theme.of(context).textTheme.headline1),
+                    const SizedBox.square(dimension: 16),
+                    Container(
+                      constraints: const BoxConstraints(maxWidth: 500),
+                      child: TextField(
+                        controller: _emailTextController,
+                        decoration: const InputDecoration(
+                            border: OutlineInputBorder(), hintText: "Email"),
+                      ),
                     ),
-                  ),
-                  const SizedBox.square(dimension: 16),
-                ],
-                Container(
-                  constraints: const BoxConstraints(maxWidth: 500),
-                  height: 48,
-                  width: double.maxFinite,
-                  child: ElevatedButton(
-                    onPressed: _login,
-                    child: const Text("Login"),
-                  ),
+                    const SizedBox.square(dimension: 16),
+                    Container(
+                      constraints: const BoxConstraints(maxWidth: 500),
+                      child: TextField(
+                        controller: _passwordTextController,
+                        obscureText: _passwordVisible,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        decoration: InputDecoration(
+                            border: const OutlineInputBorder(),
+                            hintText: "Password",
+                            suffixIcon: IconButton(
+                              onPressed: _togglePasswordVisibity,
+                              icon: Icon(_passwordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off),
+                            )),
+                        keyboardType: TextInputType.visiblePassword,
+                        onSubmitted: (value) => _login(),
+                      ),
+                    ),
+                    const SizedBox.square(dimension: 16),
+                    if (state is LoginFailure) ...[
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "* ${state.message}",
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      ),
+                      const SizedBox.square(dimension: 16),
+                    ],
+                    SizedBox(
+                      height: 48,
+                      width: double.maxFinite,
+                      child: ElevatedButton(
+                        onPressed: _login,
+                        child: const Text("Login"),
+                      ),
+                    ),
+                    const SizedBox.square(dimension: 4),
+                    if (state is LoginLoading) ...[
+                      const LinearProgressIndicator(),
+                    ],
+                  ],
                 ),
-              ],
+              ),
             ),
           );
         },

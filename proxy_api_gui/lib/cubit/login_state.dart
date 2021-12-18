@@ -8,6 +8,10 @@ class LoginInitial extends LoginState {
   const LoginInitial();
 }
 
+class LoginLoading extends LoginState {
+  const LoginLoading();
+}
+
 class LoginSuccess extends LoginState {
   LoginSuccess();
 }
