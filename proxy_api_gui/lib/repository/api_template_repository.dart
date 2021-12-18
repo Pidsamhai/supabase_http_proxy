@@ -14,6 +14,14 @@ class ApiTemplateRepository {
         []);
   }
 
+  Future<List<Template>> getTemplates() async {
+    final event = await _database.ref(_templateRef).get();
+    return (event.value as Map<String, dynamic>?)?.entries.map((e) {
+          return Template.fromJson(e.key, e.value as Map<String, dynamic>);
+        }).toList() ??
+        [];
+  }
+
   Future<void> createTemplate(Template template) async {
     try {
       const uuid = Uuid();

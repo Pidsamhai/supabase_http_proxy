@@ -113,57 +113,68 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Center(
-                child: Text("Api Template",
-                    style: Theme.of(context).textTheme.headline1),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Center(
+              child: Text("Api Template",
+                  style: Theme.of(context).textTheme.headline1),
+            ),
+          ),
+          Flexible(
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              child: StreamBuilder(
+                stream: context.read<ApiTemplateRepository>().templates(),
+                builder: (context, AsyncSnapshot<List<Template>> state) {
+                  return !state.hasData || state.data?.isEmpty == true
+                      ? const Center(
+                          child: Text("No template"),
+                        )
+                      : ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          itemCount: state.data?.length ?? 0,
+                          itemBuilder: (context, index) => TemplateCard(
+                            state.data![index],
+                            onEdit: () =>
+                                QR.to("/edit/${state.data![index].uid}"),
+                            onDelete: () => _confirmDelete(state.data![index]),
+                          ),
+                        );
+                },
               ),
             ),
-            Flexible(
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                child: StreamBuilder(
-                  stream: context.read<ApiTemplateRepository>().templates(),
-                  builder: (context, AsyncSnapshot<List<Template>> state) {
-                    return !state.hasData || state.data?.isEmpty == true ? const Center(
-                      child: Text("No template"),
-                    ) : ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemCount: state.data?.length ?? 0,
-                      itemBuilder: (context, index) => TemplateCard(
-                        state.data![index],
-                        onEdit: () => QR.to("/edit/${state.data![index].uid}"),
-                        onDelete: () => _confirmDelete(state.data![index]),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-          ],
-        ),
-        floatingActionButton: Wrap(
-          direction: Axis.vertical,
-          crossAxisAlignment: WrapCrossAlignment.end,
-          spacing: 8,
-          children: [
-            FloatingActionButton.extended(
-              heroTag: UniqueKey(),
-              onPressed: _signOutDialog,
-              label: const Text("Signout"),
-              icon: const Icon(Icons.power_settings_new),
-              backgroundColor: Colors.red,
-            ),
-            FloatingActionButton.extended(
-              heroTag: UniqueKey(),
-              onPressed: () => QR.toName(AppRouter.createTemplate),
-              label: const Text("Add Template"),
-              icon: const Icon(Icons.add),
-            ),
-          ],
-        ));
+          ),
+        ],
+      ),
+      floatingActionButton: Wrap(
+        direction: Axis.vertical,
+        crossAxisAlignment: WrapCrossAlignment.end,
+        spacing: 8,
+        children: [
+          FloatingActionButton.extended(
+            heroTag: UniqueKey(),
+            onPressed: _signOutDialog,
+            label: const Text("Signout"),
+            icon: const Icon(Icons.power_settings_new),
+            backgroundColor: Colors.red,
+          ),
+          FloatingActionButton.extended(
+            heroTag: UniqueKey(),
+            onPressed: () => QR.toName(AppRouter.playground),
+            label: const Text("Playground"),
+            icon: const Icon(Icons.play_arrow_rounded),
+            backgroundColor: Colors.green.shade600,
+          ),
+          FloatingActionButton.extended(
+            heroTag: UniqueKey(),
+            onPressed: () => QR.toName(AppRouter.createTemplate),
+            label: const Text("Add Template"),
+            icon: const Icon(Icons.add),
+          ),
+        ],
+      ),
+    );
   }
 }

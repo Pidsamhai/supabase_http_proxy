@@ -2,10 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:proxy_api_gui/cubit/login_cubit.dart';
 import 'package:proxy_api_gui/repository/api_template_repository.dart';
 import 'package:proxy_api_gui/repository/auth_repository.dart';
+import 'package:proxy_api_gui/repository/playground_repository.dart';
 import 'package:proxy_api_gui/router/app_router.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -38,9 +40,10 @@ void main() async {
     MultiProvider(
       child: const MyApp(),
       providers: [
-        Provider<AuthRepository>(create: (context) => AuthRepository(auth)),
-        Provider<ApiTemplateRepository>(create: (context) => ApiTemplateRepository(database)),
+        RepositoryProvider(create: (context) => AuthRepository(auth)),
+        RepositoryProvider(create: (context) => ApiTemplateRepository(database)),
         Provider<LoginCubit>(create: (context) => LoginCubit(context.read())),
+        RepositoryProvider(create: (context) => PlayGroundRepository())
       ],
     ),
   );
@@ -52,6 +55,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      
       routeInformationParser: const QRouteInformationParser(),
       routerDelegate: QRouterDelegate(
         AppRouter().routes(context),
