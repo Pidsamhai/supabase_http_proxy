@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:proxy_api_gui/cubit/login_cubit.dart';
 import 'package:proxy_api_gui/router/app_router.dart';
-import 'package:qlevar_router/qlevar_router.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -42,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
         listenWhen: (previous, current) => current is LoginSuccess,
         listener: (context, state) {
           if (state is LoginSuccess) {
-            QR.navigator.replaceAllWithName(AppRouter.main);
+            context.goNamed(AppRouter.main);
           }
         },
         builder: (context, state) {
@@ -76,7 +76,9 @@ class _LoginPageState extends State<LoginPage> {
                         hintText: "Password",
                         suffixIcon: IconButton(
                           onPressed: _togglePasswordVisibity,
-                          icon: Icon(_passwordVisible ? Icons.visibility : Icons.visibility_off),
+                          icon: Icon(_passwordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off),
                         )),
                     keyboardType: TextInputType.visiblePassword,
                     onSubmitted: (value) => _login(),

@@ -2,24 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:proxy_api_gui/model/template.dart';
 import 'package:provider/provider.dart';
 import 'package:proxy_api_gui/repository/api_template_repository.dart';
+import 'package:proxy_api_gui/router/app_router.dart';
 import 'package:proxy_api_gui/widget/dialog.dart';
 import 'package:proxy_api_gui/widget/template_form.dart';
-import 'package:qlevar_router/qlevar_router.dart';
+import 'package:go_router/go_router.dart';
 
 class CreateTemplatePage extends StatelessWidget {
   const CreateTemplatePage({Key? key}) : super(key: key);
 
   Future _createTemplate(BuildContext context, Template template) async {
-    final dialog = progressDialog("Create new template...");
-    QR.show(dialog);
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => progressDialog("Create new template..."),
+    );
 
     await Future.delayed(const Duration(seconds: 2));
 
     try {
       await context.read<ApiTemplateRepository>().createTemplate(template);
-      Navigator.of(context, rootNavigator: true).pop();
+      context.pop();
       await Future.delayed(const Duration(milliseconds: 100));
-      QR.back();
+      context.goNamed(AppRouter.main);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),

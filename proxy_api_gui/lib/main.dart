@@ -9,7 +9,6 @@ import 'package:proxy_api_gui/repository/api_template_repository.dart';
 import 'package:proxy_api_gui/repository/auth_repository.dart';
 import 'package:proxy_api_gui/repository/playground_repository.dart';
 import 'package:proxy_api_gui/router/app_router.dart';
-import 'package:qlevar_router/qlevar_router.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 Future<FirebaseAuth> provideFirebaseAuth() async {
@@ -34,7 +33,6 @@ void main() async {
   await Firebase.initializeApp();
   final auth = await provideFirebaseAuth();
   final database = await provideFirebaseDatabase();
-  QR.setUrlStrategy();
 
   runApp(
     MultiProvider(
@@ -54,13 +52,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final routes = AppRouter.routes(context);
     return MaterialApp.router(
-      
-      routeInformationParser: const QRouteInformationParser(),
-      routerDelegate: QRouterDelegate(
-        AppRouter().routes(context),
-        initPath: "/",
-      ),
+      routeInformationParser: routes.routeInformationParser,
+      routerDelegate: routes.routerDelegate,
       debugShowCheckedModeBanner: false,
       title: 'Proxy Api',
       theme: ThemeData(

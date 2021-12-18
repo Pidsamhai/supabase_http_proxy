@@ -4,10 +4,9 @@ import 'package:proxy_api_gui/model/template.dart';
 import 'package:proxy_api_gui/repository/api_template_repository.dart';
 import 'package:proxy_api_gui/repository/auth_repository.dart';
 import 'package:proxy_api_gui/router/app_router.dart';
-import 'package:proxy_api_gui/widget/custom_dialog.dart';
 import 'package:proxy_api_gui/widget/dialog.dart';
 import 'package:proxy_api_gui/widget/template_card.dart';
-import 'package:qlevar_router/qlevar_router.dart';
+import 'package:go_router/go_router.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -23,38 +22,41 @@ class _MainPageState extends State<MainPage> {
   }
 
   Future _signOut() async {
-    QR.show(progressDialog("Signout..."));
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => progressDialog("Signout..."),
+    );
     await context.read<AuthRepository>().signOut();
-    Navigator.of(context, rootNavigator: true).pop();
-    QR.navigator.replaceAllWithName(AppRouter.login);
+    context.pop();
+    context.goNamed(AppRouter.login);
   }
 
   _signOutDialog() {
-    QR.show(
-      CustomDialog(
-        widget: (pop) => AlertDialog(
-          title: const Text("Confirmation"),
-          content: const Text("You want to signout"),
-          actions: [
-            TextButton(
-              onPressed: () {
-                pop.call();
-                _signOut();
-              },
-              child: const Text("OK"),
-            ),
-            TextButton(
-              onPressed: () => pop.call(),
-              child: const Text("CANCEL"),
-            )
-          ],
-        ),
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Confirmation"),
+        content: const Text("You want to signout"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              context.pop();
+              _signOut();
+            },
+            child: const Text("OK"),
+          ),
+          TextButton(
+            onPressed: () => context.pop(),
+            child: const Text("CANCEL"),
+          )
+        ],
       ),
     );
   }
 
   Future _deleteTemplate(String id) async {
-    QR.show(progressDialog("Delete..."));
+    showDialog(context: context, builder: (_) => progressDialog("Delete..."));
 
     await Future.delayed(const Duration(seconds: 2));
 
@@ -68,44 +70,42 @@ class _MainPageState extends State<MainPage> {
         SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
       );
     } finally {
-      Navigator.of(context, rootNavigator: true).pop();
+      context.pop();
     }
   }
 
   _confirmDelete(Template template) {
-    QR.show(
-      CustomDialog(
-        barrierDismissible: false,
-        widget: (pop) => AlertDialog(
-          title: const Text('Confirm delete'),
-          content: RichText(
-            text: TextSpan(
-              children: [
-                const TextSpan(
-                  text: 'You want to delete ',
-                ),
-                TextSpan(
-                  text: template.name,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 20),
-                ),
-                const TextSpan(text: ' template'),
-              ],
-            ),
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirm delete'),
+        content: RichText(
+          text: TextSpan(
+            children: [
+              const TextSpan(
+                text: 'You want to delete ',
+              ),
+              TextSpan(
+                text: template.name,
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+              const TextSpan(text: ' template'),
+            ],
           ),
-          actions: [
-            TextButton(
-                onPressed: () {
-                  pop.call();
-                  _deleteTemplate(template.uid);
-                },
-                child: const Text("OK")),
-            TextButton(
-              onPressed: () => pop.call(),
-              child: const Text("CANCEL"),
-            ),
-          ],
         ),
+        actions: [
+          TextButton(
+              onPressed: () {
+                context.pop();
+                _deleteTemplate(template.uid);
+              },
+              child: const Text("OK")),
+          TextButton(
+            onPressed: () => context.pop(),
+            child: const Text("CANCEL"),
+          ),
+        ],
       ),
     );
   }
@@ -137,8 +137,7 @@ class _MainPageState extends State<MainPage> {
                           itemCount: state.data?.length ?? 0,
                           itemBuilder: (context, index) => TemplateCard(
                             state.data![index],
-                            onEdit: () =>
-                                QR.to("/edit/${state.data![index].uid}"),
+                            onEdit: () => context.go(AppRouter.editTemplate(state.data![index].uid)),
                             onDelete: () => _confirmDelete(state.data![index]),
                           ),
                         );
@@ -162,14 +161,14 @@ class _MainPageState extends State<MainPage> {
           ),
           FloatingActionButton.extended(
             heroTag: UniqueKey(),
-            onPressed: () => QR.toName(AppRouter.playground),
+            onPressed: () =>  context.goNamed(AppRouter.playground),
             label: const Text("Playground"),
             icon: const Icon(Icons.play_arrow_rounded),
             backgroundColor: Colors.green.shade600,
           ),
           FloatingActionButton.extended(
             heroTag: UniqueKey(),
-            onPressed: () => QR.toName(AppRouter.createTemplate),
+            onPressed: () => context.goNamed(AppRouter.createTemplate),
             label: const Text("Add Template"),
             icon: const Icon(Icons.add),
           ),
