@@ -3,7 +3,7 @@ import 'package:proxy_api_gui/model/template.dart';
 import 'package:provider/provider.dart';
 import 'package:proxy_api_gui/repository/api_template_repository.dart';
 import 'package:proxy_api_gui/widget/header_params_widget.dart';
-import 'package:qlevar_router/qlevar_router.dart';
+import 'package:go_router/go_router.dart';
 
 class TemplateEditForm extends StatefulWidget {
   final String? id;
@@ -58,7 +58,7 @@ class _TemplateEditFormState extends State<TemplateEditForm> {
           )));
       _rebuild();
     } catch (e) {
-      QR.back();
+      context.pop();
     }
   }
 

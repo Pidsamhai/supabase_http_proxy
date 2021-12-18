@@ -4,15 +4,13 @@ class AuthRepository {
   final FirebaseAuth _auth;
   AuthRepository(this._auth);
 
-  Future<UserCredential> login({required String email, required String password}) =>
+  Future<UserCredential> login(
+          {required String email, required String password}) =>
       _auth.signInWithEmailAndPassword(email: email, password: password);
 
-  Future<User?> currentUser() async {
-    User? user = _auth.currentUser ?? await _auth.authStateChanges().first;
-    return user;
-  }
+  User? currentUser() => _auth.currentUser;
 
-  Future<bool> isLogged() async => await currentUser() != null;
+  bool get isLogged => currentUser() != null;
 
   Future<void> signOut() async => _auth.signOut();
 }
