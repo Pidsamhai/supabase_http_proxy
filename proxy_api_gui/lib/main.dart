@@ -10,6 +10,7 @@ import 'package:proxy_api_gui/repository/auth_repository.dart';
 import 'package:proxy_api_gui/repository/playground_repository.dart';
 import 'package:proxy_api_gui/router/app_router.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 
 Future<FirebaseAuth> provideFirebaseAuth() async {
   final auth = FirebaseAuth.instance;
@@ -28,18 +29,28 @@ Future<FirebaseDatabase> provideFirebaseDatabase() async {
   return database;
 }
 
+Future<void> initAppCheck() async {
+  if (!kDebugMode) {
+    await FirebaseAppCheck.instance.activate(
+      webRecaptchaSiteKey: "6LefPr4dAAAAAF0d-FFP57NQTFXpXNIRuWP-mwds",
+    );
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   final auth = await provideFirebaseAuth();
   final database = await provideFirebaseDatabase();
+  await initAppCheck();
 
   runApp(
     MultiProvider(
       child: const MyApp(),
       providers: [
         RepositoryProvider(create: (context) => AuthRepository(auth)),
-        RepositoryProvider(create: (context) => ApiTemplateRepository(database)),
+        RepositoryProvider(
+            create: (context) => ApiTemplateRepository(database)),
         Provider<LoginCubit>(create: (context) => LoginCubit(context.read())),
         RepositoryProvider(create: (context) => PlayGroundRepository())
       ],
