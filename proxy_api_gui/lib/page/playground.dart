@@ -38,7 +38,7 @@ class _PlaygroundPageState extends State<PlaygroundPage>
     "TRACE"
   ];
   String? _selectedMethod;
-  Response<String>? _responseLog;
+  Response<dynamic>? _responseLog;
   final List<String> _tabBarItems = ["Body", "Header"];
 
   _rebuild() => setState(() => {});
@@ -66,10 +66,6 @@ class _PlaygroundPageState extends State<PlaygroundPage>
         path: "/" + _pathController.text,
       );
       _responseLog = await context.read<PlayGroundRepository>().call(template);
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
-      );
     } finally {
       _isLoading = false;
       _rebuild();

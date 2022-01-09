@@ -16,7 +16,7 @@ class PlayGroundTemplate {
 
 class PlayGroundRepository {
   final dio = Dio();
-  Future<Response<String>?> call(PlayGroundTemplate playGroundTemplate) async {
+  Future<Response<dynamic>?> call(PlayGroundTemplate playGroundTemplate) async {
     try {
       final options = RequestOptions(
         method: playGroundTemplate.method,
@@ -28,8 +28,7 @@ class PlayGroundRepository {
       final res = await dio.fetch<String>(options);
       return res;
     } on DioError catch (e) {
-      return null;
-      // return "${e.error.toString()} \n ${e.requestOptions.uri} \n ${e.response?.data.toString() ?? ""}";
+      return e.response;
     }
   }
 }
