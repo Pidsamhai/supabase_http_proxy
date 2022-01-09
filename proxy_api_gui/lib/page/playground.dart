@@ -6,8 +6,10 @@ import 'package:provider/provider.dart';
 import 'package:proxy_api_gui/model/template.dart';
 import 'package:proxy_api_gui/repository/api_template_repository.dart';
 import 'package:proxy_api_gui/repository/playground_repository.dart';
+import 'package:proxy_api_gui/router/app_router.dart';
 import 'package:proxy_api_gui/utils/const.dart';
 import 'package:proxy_api_gui/widget/custom_higlight_widget.dart';
+import 'package:go_router/go_router.dart';
 
 class PlaygroundPage extends StatefulWidget {
   const PlaygroundPage({Key? key}) : super(key: key);
@@ -89,12 +91,22 @@ class _PlaygroundPageState extends State<PlaygroundPage>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "Playground",
-              style: Theme.of(context)
-                  .textTheme
-                  .headline5
-                  ?.copyWith(fontWeight: FontWeight.bold),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  BackButton(
+                    onPressed: () => context.goNamed(AppRouter.main),
+                  ),
+                  Text(
+                    "Play Ground",
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline5
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
             ),
             SizedBox(
               height: 60,

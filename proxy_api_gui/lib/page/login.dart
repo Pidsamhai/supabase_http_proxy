@@ -55,8 +55,13 @@ class _LoginPageState extends State<LoginPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Proxy Api",
-                        style: Theme.of(context).textTheme.headline1),
+                    Text(
+                      "Proxy Api",
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline4
+                          ?.copyWith(fontWeight: FontWeight.bold),
+                    ),
                     const SizedBox.square(dimension: 16),
                     Container(
                       constraints: const BoxConstraints(maxWidth: 500),

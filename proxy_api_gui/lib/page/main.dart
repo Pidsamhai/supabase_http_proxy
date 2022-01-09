@@ -16,7 +16,6 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-
   Future _signOut() async {
     showDialog(
       context: context,
@@ -111,11 +110,17 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Center(
-              child: Text("Api Template",
-                  style: Theme.of(context).textTheme.headline1),
+          Align(
+            alignment: Alignment.topLeft,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                "Api Template",
+                style: Theme.of(context)
+                    .textTheme
+                    .headline5
+                    ?.copyWith(fontWeight: FontWeight.bold),
+              ),
             ),
           ),
           Flexible(
@@ -133,7 +138,8 @@ class _MainPageState extends State<MainPage> {
                           itemCount: state.data?.length ?? 0,
                           itemBuilder: (context, index) => TemplateCard(
                             state.data![index],
-                            onEdit: () => context.go(AppRouter.editTemplate(state.data![index].uid)),
+                            onEdit: () => context.go(
+                                AppRouter.editTemplate(state.data![index].uid)),
                             onDelete: () => _confirmDelete(state.data![index]),
                           ),
                         );
@@ -157,7 +163,7 @@ class _MainPageState extends State<MainPage> {
           ),
           FloatingActionButton.extended(
             heroTag: UniqueKey(),
-            onPressed: () =>  context.goNamed(AppRouter.playground),
+            onPressed: () => context.goNamed(AppRouter.playground),
             label: const Text("Playground"),
             icon: const Icon(Icons.play_arrow_rounded),
             backgroundColor: Colors.green.shade600,

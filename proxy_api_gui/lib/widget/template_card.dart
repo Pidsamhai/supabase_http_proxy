@@ -42,22 +42,22 @@ class TemplateCard extends StatelessWidget {
                       _template.name,
                       style: Theme.of(context)
                           .textTheme
-                          .headline4
+                          .headline6
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox.square(dimension: 8),
-                    Opacity(
-                      opacity: 0.4,
-                      child: Text(
-                        _template.descriptions ?? "",
-                        style: Theme.of(context)
-                            .textTheme
-                            .subtitle1
-                            ?.copyWith(fontWeight: FontWeight.bold),
+                    if (_template.descriptions?.isNotEmpty == true) ...[
+                      Opacity(
+                        opacity: 0.4,
+                        child: Text(
+                          _template.descriptions ?? "",
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle1
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        ),
                       ),
-                    ),
-                    const SizedBox.square(dimension: 8),
-                    Text("URL : $baseApiUrl${_template.uid}")
+                    ]
                   ],
                 ),
               ),

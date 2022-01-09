@@ -48,12 +48,19 @@ class _EditTemplatePageState extends State<EditTemplatePage> {
         children: [
           Padding(
             padding: const EdgeInsets.all(16),
-            child: Text(
-              "Edit template",
-              style: Theme.of(context)
-                  .textTheme
-                  .headline5
-                  ?.copyWith(fontWeight: FontWeight.bold),
+            child: Row(
+              children: [
+                BackButton(
+                  onPressed: () => context.goNamed(AppRouter.main),
+                ),
+                Text(
+                  "Edit template",
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline5
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
           ),
           Expanded(
