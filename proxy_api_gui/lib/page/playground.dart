@@ -111,7 +111,6 @@ class _PlaygroundPageState extends State<PlaygroundPage>
                 children: [
                   DropdownButton<Template>(
                     itemHeight: 60,
-                    menuMaxHeight: 60,
                     hint: const Text("Select template"),
                     value: _selected,
                     onChanged: (value) => setState(() => _selected = value),
@@ -125,7 +124,6 @@ class _PlaygroundPageState extends State<PlaygroundPage>
                   const SizedBox.square(dimension: 16),
                   DropdownButton<String>(
                     itemHeight: 60,
-                    menuMaxHeight: 60,
                     hint: const Text("METHOD"),
                     value: _selectedMethod,
                     onChanged: (value) =>
@@ -168,7 +166,9 @@ class _PlaygroundPageState extends State<PlaygroundPage>
               width: double.maxFinite,
               height: 48,
               child: ElevatedButton(
-                onPressed: (_selected != null && _selectedMethod != null)
+                onPressed: (_selected != null &&
+                        _selectedMethod != null &&
+                        !_isLoading)
                     ? _senRequest
                     : null,
                 child: Row(
