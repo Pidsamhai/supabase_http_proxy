@@ -10,6 +10,7 @@ import 'package:proxy_api_gui/router/app_router.dart';
 import 'package:proxy_api_gui/utils/const.dart';
 import 'package:proxy_api_gui/widget/custom_higlight_widget.dart';
 import 'package:go_router/go_router.dart';
+import 'package:collection/collection.dart';
 
 class PlaygroundPage extends StatefulWidget {
   const PlaygroundPage({Key? key}) : super(key: key);
@@ -196,13 +197,21 @@ class _PlaygroundPageState extends State<PlaygroundPage>
             ],
             const SizedBox.square(dimension: 16),
             TabBar(
+              indicator: const BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.all(Radius.circular(100)),
+              ),
               controller: _tabController,
+              labelColor: Colors.white,
+              unselectedLabelColor: Colors.blue,
               tabs: _tabBarItems
-                  .map((e) => Tab(
-                        child: Text(e,
-                            style: const TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold)),
+                  .mapIndexed((i, e) => Tab(
+                        child: Text(
+                          e,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ))
                   .toList(),
             ),
