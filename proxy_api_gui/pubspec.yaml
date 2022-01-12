@@ -1,5 +1,5 @@
 name: proxy_api_gui
-description: A new Flutter project.
+description: Flutter Application manage proxy api.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
