@@ -11,6 +11,7 @@ import 'package:proxy_api_gui/repository/playground_repository.dart';
 import 'package:proxy_api_gui/router/app_router.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:proxy_api_gui/theme/theme.dart';
 
 Future<FirebaseAuth> provideFirebaseAuth() async {
   final auth = FirebaseAuth.instance;
@@ -69,8 +70,24 @@ class MyApp extends StatelessWidget {
       routerDelegate: routes.routerDelegate,
       debugShowCheckedModeBanner: false,
       title: 'Proxy Api',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+      theme: ThemeData.from(colorScheme: const ColorScheme.light()).copyWith(
+        elevatedButtonTheme:
+            ElevatedButtonThemeData(style: elevatedButtonStyle),
+        cardTheme: CardTheme(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          elevation: 0,
+          highlightElevation: 4,
+          hoverElevation: 2,
+          extendedTextStyle: TextStyle(color: Colors.white),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+          ),
+        ),
+        dialogTheme: dialogTheme,
       ),
     );
   }

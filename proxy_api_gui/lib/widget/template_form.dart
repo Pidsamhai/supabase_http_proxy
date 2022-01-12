@@ -145,22 +145,13 @@ class _TemplateEditFormState extends State<TemplateEditForm> {
                     keyboardType: TextInputType.visiblePassword,
                   ),
                   const SizedBox.square(dimension: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text("Headers"),
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _headerWidgets.add(HeaderParamsWidget(
-                              onRemove: _removeHeadersWidget,
-                            ));
-                          });
-                        },
-                        child: const Text("add"),
-                      )
-                    ],
-                  ),
+                  _sectionHeader(onAdd: () {
+                    setState(() {
+                      _headerWidgets.add(HeaderParamsWidget(
+                        onRemove: _removeHeadersWidget,
+                      ));
+                    });
+                  }),
                   const SizedBox.square(dimension: 16),
                   Container(
                     width: 500,
@@ -177,22 +168,13 @@ class _TemplateEditFormState extends State<TemplateEditForm> {
                     ),
                   ),
                   const SizedBox.square(dimension: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text("Params"),
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _paramWidgets.add(HeaderParamsWidget(
-                              onRemove: _removeParamsWidget,
-                            ));
-                          });
-                        },
-                        child: const Text("add"),
-                      )
-                    ],
-                  ),
+                  _sectionHeader(onAdd: () {
+                    setState(() {
+                      _paramWidgets.add(HeaderParamsWidget(
+                        onRemove: _removeParamsWidget,
+                      ));
+                    });
+                  }),
                   const SizedBox.square(dimension: 16),
                   Container(
                     width: 500,
@@ -221,6 +203,21 @@ class _TemplateEditFormState extends State<TemplateEditForm> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _sectionHeader({required VoidCallback onAdd}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text("Headers", style: Theme.of(context).textTheme.headline6),
+        FloatingActionButton.small(
+          heroTag: UniqueKey(),
+          onPressed: onAdd,
+          child: Icon(Icons.add, color: Colors.purple.shade900),
+          backgroundColor: Colors.purple.shade50,
+        )
+      ],
     );
   }
 }

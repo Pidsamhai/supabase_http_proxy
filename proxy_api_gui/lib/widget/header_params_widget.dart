@@ -55,9 +55,14 @@ class HeaderParamsWidget extends StatelessWidget {
             ),
           ),
           const SizedBox.square(dimension: 16),
-          IconButton(
+          FloatingActionButton.small(
+            heroTag: UniqueKey(),
             onPressed: () => onRemove?.call(this),
-            icon: const Icon(Icons.remove),
+            child: Icon(
+              Icons.remove,
+              color: Colors.grey.shade900,
+            ),
+            backgroundColor: Colors.grey.shade400,
           )
         ],
       ),

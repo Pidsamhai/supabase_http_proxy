@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:proxy_api_gui/dialog/confirm_dialog.dart';
 import 'package:proxy_api_gui/model/template.dart';
 import 'package:proxy_api_gui/repository/api_template_repository.dart';
 import 'package:proxy_api_gui/repository/auth_repository.dart';
@@ -30,22 +31,14 @@ class _MainPageState extends State<MainPage> {
   _signOutDialog() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (context) => ConfirmDialog(
         title: const Text("Confirmation"),
         content: const Text("You want to signout"),
-        actions: [
-          TextButton(
-            onPressed: () {
-              context.pop();
-              _signOut();
-            },
-            child: const Text("OK"),
-          ),
-          TextButton(
-            onPressed: () => context.pop(),
-            child: const Text("CANCEL"),
-          )
-        ],
+        onConfirm: () {
+          context.pop();
+          _signOut();
+        },
+        onCancel: () => context.pop(),
       ),
     );
   }
@@ -72,7 +65,7 @@ class _MainPageState extends State<MainPage> {
   _confirmDelete(Template template) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (context) => ConfirmDialog(
         title: const Text('Confirm delete'),
         content: RichText(
           text: TextSpan(
@@ -82,25 +75,19 @@ class _MainPageState extends State<MainPage> {
               ),
               TextSpan(
                 text: template.name,
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const TextSpan(text: ' template'),
             ],
           ),
         ),
-        actions: [
-          TextButton(
-              onPressed: () {
-                context.pop();
-                _deleteTemplate(template.uid);
-              },
-              child: const Text("OK")),
-          TextButton(
-            onPressed: () => context.pop(),
-            child: const Text("CANCEL"),
-          ),
-        ],
+        onCancel: () => context.pop(),
+        onConfirm: () {
+          context.pop();
+          _deleteTemplate(template.uid);
+        },
       ),
     );
   }
@@ -157,22 +144,53 @@ class _MainPageState extends State<MainPage> {
           FloatingActionButton.extended(
             heroTag: UniqueKey(),
             onPressed: _signOutDialog,
-            label: const Text("Signout"),
-            icon: const Icon(Icons.power_settings_new),
+            label: Text(
+              "Signout",
+              style:
+                  Theme.of(context).floatingActionButtonTheme.extendedTextStyle,
+            ),
+            icon: Icon(
+              Icons.power_settings_new,
+              color: Theme.of(context)
+                  .floatingActionButtonTheme
+                  .extendedTextStyle
+                  ?.color,
+            ),
             backgroundColor: Colors.red,
           ),
           FloatingActionButton.extended(
             heroTag: UniqueKey(),
             onPressed: () => context.goNamed(AppRouter.playground),
-            label: const Text("Playground"),
-            icon: const Icon(Icons.play_arrow_rounded),
+            label: Text(
+              "Playground",
+              style:
+                  Theme.of(context).floatingActionButtonTheme.extendedTextStyle,
+            ),
+            icon: Icon(
+              Icons.play_arrow_rounded,
+              color: Theme.of(context)
+                  .floatingActionButtonTheme
+                  .extendedTextStyle
+                  ?.color,
+            ),
             backgroundColor: Colors.green.shade600,
           ),
           FloatingActionButton.extended(
             heroTag: UniqueKey(),
             onPressed: () => context.goNamed(AppRouter.createTemplate),
-            label: const Text("Add Template"),
-            icon: const Icon(Icons.add),
+            label: Text(
+              "Add Template",
+              style:
+                  Theme.of(context).floatingActionButtonTheme.extendedTextStyle,
+            ),
+            icon: Icon(
+              Icons.add,
+              color: Theme.of(context)
+                  .floatingActionButtonTheme
+                  .extendedTextStyle
+                  ?.color,
+            ),
+            backgroundColor: Colors.blue.shade500,
           ),
         ],
       ),
