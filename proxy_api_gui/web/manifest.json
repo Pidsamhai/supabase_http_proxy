@@ -1,11 +1,11 @@
 {
-    "name": "proxy_api_gui",
-    "short_name": "proxy_api_gui",
+    "name": "Proxy Api",
+    "short_name": "Proxy Api",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Flutter Application manage proxy api.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
