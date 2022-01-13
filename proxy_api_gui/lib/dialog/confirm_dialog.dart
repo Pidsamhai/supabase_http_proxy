@@ -44,7 +44,10 @@ class ConfirmDialog extends StatelessWidget {
                 top: 16,
                 bottom: 24,
               ),
-              child: content!,
+              child: DefaultTextStyle(
+                style: Theme.of(context).dialogTheme.contentTextStyle!,
+                child: content!,
+              ),
             )
           ]
         ],

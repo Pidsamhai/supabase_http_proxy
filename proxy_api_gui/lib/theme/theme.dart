@@ -18,10 +18,12 @@ final DialogTheme dialogTheme = DialogTheme(
   titleTextStyle: const TextStyle(
     fontSize: 24,
     fontWeight: FontWeight.w400,
+    color: Colors.black,
   ),
   contentTextStyle: const TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.w500,
+    color: Colors.black,
   ),
   shape: const RoundedRectangleBorder(
     borderRadius: BorderRadius.all(Radius.circular(28)),
