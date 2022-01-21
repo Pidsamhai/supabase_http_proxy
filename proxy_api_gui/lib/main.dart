@@ -1,58 +1,30 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:proxy_api_gui/cubit/login_cubit.dart';
+import 'package:proxy_api_gui/cubit/signup_cubit.dart';
 import 'package:proxy_api_gui/repository/api_template_repository.dart';
 import 'package:proxy_api_gui/repository/auth_repository.dart';
 import 'package:proxy_api_gui/repository/playground_repository.dart';
 import 'package:proxy_api_gui/router/app_router.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:proxy_api_gui/theme/theme.dart';
-
-Future<FirebaseAuth> provideFirebaseAuth() async {
-  final auth = FirebaseAuth.instance;
-  await auth.setPersistence(Persistence.SESSION);
-  if (kDebugMode) {
-    auth.useAuthEmulator("127.0.0.1", 9099);
-  }
-  return auth;
-}
-
-Future<FirebaseDatabase> provideFirebaseDatabase() async {
-  final database = FirebaseDatabase.instance;
-  if (kDebugMode) {
-    database.useDatabaseEmulator("127.0.0.1", 9000);
-  }
-  return database;
-}
-
-Future<void> initAppCheck() async {
-  if (!kDebugMode) {
-    await FirebaseAppCheck.instance.activate(
-      webRecaptchaSiteKey: "6LefPr4dAAAAAF0d-FFP57NQTFXpXNIRuWP-mwds",
-    );
-  }
-}
+import 'package:supabase/supabase.dart' as sp;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  final auth = await provideFirebaseAuth();
-  final database = await provideFirebaseDatabase();
-  await initAppCheck();
+  await dotenv.load(fileName: ".env");
+  final sp.SupabaseClient client = sp.SupabaseClient(
+      dotenv.get("SUPABASE_API_URL"), dotenv.get("SUPABASE_KEY"));
 
   runApp(
     MultiProvider(
       child: const MyApp(),
       providers: [
-        RepositoryProvider(create: (context) => AuthRepository(auth)),
-        RepositoryProvider(
-            create: (context) => ApiTemplateRepository(database)),
+        RepositoryProvider(create: (context) => AuthRepository(client.auth)),
+        RepositoryProvider(create: (context) => ApiTemplateRepository(client)),
         Provider<LoginCubit>(create: (context) => LoginCubit(context.read())),
+        Provider<SignUpCubit>(create: (context) => SignUpCubit(context.read())),
         RepositoryProvider(create: (context) => PlayGroundRepository())
       ],
     ),

@@ -2,18 +2,19 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:proxy_api_gui/cubit/login_cubit.dart';
+import 'package:proxy_api_gui/cubit/signup_cubit.dart';
 import 'package:proxy_api_gui/router/app_router.dart';
 import 'package:go_router/go_router.dart';
 import 'package:proxy_api_gui/cubit/login_state.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class SignupPage extends StatefulWidget {
+  const SignupPage({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SignupPage> createState() => _SignupPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignupPageState extends State<SignupPage> {
   final _emailTextController = TextEditingController();
   final _passwordTextController = TextEditingController();
   String get _email => _emailTextController.text;
@@ -35,14 +36,14 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    _login() => context.read<LoginCubit>().login(_email, _password);
+    _login() => context.read<SignUpCubit>().signup(_email, _password);
 
     return Scaffold(
       body: BlocConsumer<LoginCubit, LoginState>(
         listenWhen: (previous, current) => current is LoginSuccess,
         listener: (context, state) {
           if (state is LoginSuccess) {
-            context.goNamed(AppRouter.main);
+            // context.goNamed(AppRouter.main);
           }
         },
         builder: (context, state) {
@@ -56,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Proxy Api",
+                      "Signup",
                       style: Theme.of(context)
                           .textTheme
                           .headline4
@@ -108,28 +109,13 @@ class _LoginPageState extends State<LoginPage> {
                       width: double.maxFinite,
                       child: ElevatedButton(
                         onPressed: _login,
-                        child: const Text("Login"),
+                        child: const Text("Signup"),
                       ),
                     ),
                     const SizedBox.square(dimension: 4),
                     if (state is LoginLoading) ...[
                       const LinearProgressIndicator(),
                     ],
-                    const SizedBox.square(dimension: 4),
-                    MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: GestureDetector(
-                        child: Text(
-                          "Signup",
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                        onTap: () => context.goNamed(AppRouter.signup),
-                      ),
-                    )
                   ],
                 ),
               ),

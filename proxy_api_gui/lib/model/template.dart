@@ -37,7 +37,8 @@ class Template {
     required this.params,
   });
 
-  Template.fromJson(this.uid, Map<String, dynamic> json) {
+  Template.fromJson(Map<String, dynamic> json) {
+    uid = json["uid"];
     name = json['name'];
     descriptions = json['descriptions'];
     baseUrl = json['baseUrl'];

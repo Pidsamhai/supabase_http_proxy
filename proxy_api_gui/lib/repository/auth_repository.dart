@@ -1,14 +1,23 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:supabase/supabase.dart';
 
 class AuthRepository {
-  final FirebaseAuth _auth;
+  final GoTrueClient _auth;
   AuthRepository(this._auth);
 
-  Future<UserCredential> login(
-          {required String email, required String password}) =>
-      _auth.signInWithEmailAndPassword(email: email, password: password);
+  Future<GotrueResponse> login({
+    required String email,
+    required String password,
+  }) =>
+      _auth.signIn(email: email, password: password);
 
-  User? currentUser() => _auth.currentUser;
+  Future<GotrueSessionResponse> signUp({
+    required String email,
+    required String password,
+  }) {
+    return _auth.signUp(email, password);
+  }
+
+  User? currentUser() => _auth.session()?.user;
 
   bool get isLogged => currentUser() != null;
 
