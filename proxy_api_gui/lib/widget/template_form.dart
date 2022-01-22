@@ -145,13 +145,15 @@ class _TemplateEditFormState extends State<TemplateEditForm> {
                     keyboardType: TextInputType.visiblePassword,
                   ),
                   const SizedBox.square(dimension: 16),
-                  _sectionHeader(onAdd: () {
-                    setState(() {
-                      _headerWidgets.add(HeaderParamsWidget(
-                        onRemove: _removeHeadersWidget,
-                      ));
-                    });
-                  }),
+                  _sectionHeader(
+                      title: "Headers",
+                      onAdd: () {
+                        setState(() {
+                          _headerWidgets.add(HeaderParamsWidget(
+                            onRemove: _removeHeadersWidget,
+                          ));
+                        });
+                      }),
                   const SizedBox.square(dimension: 16),
                   Container(
                     width: 500,
@@ -168,13 +170,15 @@ class _TemplateEditFormState extends State<TemplateEditForm> {
                     ),
                   ),
                   const SizedBox.square(dimension: 16),
-                  _sectionHeader(onAdd: () {
-                    setState(() {
-                      _paramWidgets.add(HeaderParamsWidget(
-                        onRemove: _removeParamsWidget,
-                      ));
-                    });
-                  }),
+                  _sectionHeader(
+                      title: "Params",
+                      onAdd: () {
+                        setState(() {
+                          _paramWidgets.add(HeaderParamsWidget(
+                            onRemove: _removeParamsWidget,
+                          ));
+                        });
+                      }),
                   const SizedBox.square(dimension: 16),
                   Container(
                     width: 500,
@@ -206,11 +210,11 @@ class _TemplateEditFormState extends State<TemplateEditForm> {
     );
   }
 
-  Widget _sectionHeader({required VoidCallback onAdd}) {
+  Widget _sectionHeader({required String title, required VoidCallback onAdd}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text("Headers", style: Theme.of(context).textTheme.headline6),
+        Text(title, style: Theme.of(context).textTheme.headline6),
         FloatingActionButton.small(
           heroTag: UniqueKey(),
           onPressed: onAdd,
