@@ -46,13 +46,17 @@ class ApiTemplateRepository {
   }
 
   Future<Template> getTemplate({required String id}) async {
-    // try {
-    //   final child = await _database.ref(_templateRef).child(id).get();
-    //   return Template.fromJson(child.key!, child.value as Map<String, dynamic>);
-    // } catch (e) {
-    //   rethrow;
-    // }
-    throw Exception("Not implement Yet");
+    try {
+      final result = await _client
+          .from(_templateRef)
+          .select("*")
+          .eq("uid", id)
+          .single()
+          .execute();
+      return Template.fromJson(result.data);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<void> deleteTemplate({required String id}) async {
@@ -64,15 +68,15 @@ class ApiTemplateRepository {
   }
 
   Future<void> updateTemplate({required Template template}) async {
-    // try {
-    //   await _database
-    //       .ref(_templateRef)
-    //       .child(template.uid)
-    //       .update(template.toJson());
-    // } catch (e) {
-    //   rethrow;
-    // }
-    throw Exception("Not implement Yet");
+    try {
+      await _client
+          .from(_templateRef)
+          .update(template.toJson())
+          .eq("uid", template.uid)
+          .execute();
+    } catch (e) {
+      rethrow;
+    }
   }
 
   static const _templateRef = "template";
