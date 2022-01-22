@@ -4,33 +4,19 @@ on:
     tags:
       - '*'
 jobs:
-  deploy_firebase:
-    name: Deploy
+  deploy_heroku_app:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: functions
     steps:
-      - uses: actions/checkout@master
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v2
+      - uses: akhileshns/heroku-deploy@v3.12.12
         with:
-          node-version: '14'
-      - name: Install Dependencies
-        run: npm install
-      - name: Create Build Info
-        run: |
-          date > src/resource/builddate
-          echo ${{ github.ref_name }} > src/resource/version
-
-      - name: Deploy to Firebase
-        uses: w9jds/firebase-action@master
-        with:
-          args: deploy
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "supabase-proxy-api"
+          heroku_email: ${{secrets.HEROKU_EMAIL}}
+          appdir: functions
 
   deploy_web_app:
+    needs: deploy_heroku_app
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -49,10 +35,15 @@ jobs:
     - name: Install dependencies
       run: flutter pub get
     
-    - name: Set Base Url
-      run: echo "const baseApiUrl = $BASE_API_URL;" > lib/utils/const.dart
+    - name: Create env file
+      run: |
+        echo BASE_API_URL=$BASE_API_URL >> .env
+        echo SUPABASE_API_URL=$SUPABASE_API_URL >> .env
+        echo SUPABASE_KEY=$SUPABASE_KEY >> .env
       env:
         BASE_API_URL: "${{ secrets.BASE_API_URL }}"
+        SUPABASE_API_URL: "${{ secrets.SUPABASE_API_URL }}"
+        SUPABASE_KEY: "${{ secrets.SUPABASE_KEY }}"
 
     - name: Build web
       run: flutter build web --release --base-href /$BASE_HREF/ --web-renderer html
