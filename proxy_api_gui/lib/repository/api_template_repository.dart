@@ -39,6 +39,11 @@ class ApiTemplateRepository {
   }
 
   Future<void> createTemplate(Template template) async {
+    try {
+      await _client.from(_templateRef).insert(template.toJson()).execute();
+    } catch (e) {
+      rethrow;
+    }
     // try {
     //   const uuid = Uuid();
     //   _database.ref(_templateRef).child(uuid.v4()).set(template.toJson());
@@ -46,7 +51,7 @@ class ApiTemplateRepository {
     //   rethrow;
     // }
 
-    throw Exception("Not implement Yet");
+    // throw Exception("Not implement Yet");
   }
 
   Future<Template> getTemplate({required String id}) async {
