@@ -155,20 +155,7 @@ class _TemplateEditFormState extends State<TemplateEditForm> {
                         });
                       }),
                   const SizedBox.square(dimension: 16),
-                  Container(
-                    width: 500,
-                    height: 250,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      color: Colors.grey.shade300,
-                    ),
-                    padding: const EdgeInsets.all(8),
-                    child: ListView.builder(
-                      controller: ScrollController(),
-                      itemCount: _headerWidgets.length,
-                      itemBuilder: (context, index) => _headerWidgets[index],
-                    ),
-                  ),
+                  _headerParamsListWidget(list: _headerWidgets),
                   const SizedBox.square(dimension: 16),
                   _sectionHeader(
                       title: "Params",
@@ -180,26 +167,15 @@ class _TemplateEditFormState extends State<TemplateEditForm> {
                         });
                       }),
                   const SizedBox.square(dimension: 16),
-                  Container(
-                    width: 500,
-                    height: 250,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      color: Colors.grey.shade300,
-                    ),
-                    padding: const EdgeInsets.all(8),
-                    child: ListView.builder(
-                      controller: ScrollController(),
-                      itemCount: _paramWidgets.length,
-                      itemBuilder: (context, index) => _paramWidgets[index],
-                    ),
-                  ),
+                  _headerParamsListWidget(list: _paramWidgets),
                   const SizedBox.square(dimension: 16),
                   SizedBox(
                     width: double.maxFinite,
                     height: 50,
                     child: ElevatedButton(
-                        onPressed: _save, child: const Text("SAVE")),
+                      onPressed: _save,
+                      child: const Text("SAVE"),
+                    ),
                   )
                 ],
               ),
@@ -222,6 +198,23 @@ class _TemplateEditFormState extends State<TemplateEditForm> {
           backgroundColor: Colors.purple.shade50,
         )
       ],
+    );
+  }
+
+  Widget _headerParamsListWidget({required List<HeaderParamsWidget> list}) {
+    return Container(
+      width: 500,
+      height: 250,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: Colors.grey.shade300,
+      ),
+      padding: const EdgeInsets.all(8),
+      child: ListView.builder(
+        controller: ScrollController(),
+        itemCount: list.length,
+        itemBuilder: (context, index) => list[index],
+      ),
     );
   }
 }
