@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -9,13 +10,20 @@ import 'package:proxy_api_gui/repository/auth_repository.dart';
 import 'package:proxy_api_gui/repository/playground_repository.dart';
 import 'package:proxy_api_gui/router/app_router.dart';
 import 'package:proxy_api_gui/theme/theme.dart';
-import 'package:supabase/supabase.dart' as sp;
+import 'package:proxy_api_gui/utils/secure_local_storage.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as sp;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
-  final sp.SupabaseClient client = sp.SupabaseClient(
-      dotenv.get("SUPABASE_API_URL"), dotenv.get("SUPABASE_KEY"));
+  await sp.Supabase.initialize(
+    url: dotenv.get("SUPABASE_API_URL"),
+    anonKey: dotenv.get("SUPABASE_KEY"),
+    debug: kDebugMode,
+    localStorage: SecureLocalStorage(),
+  );
+
+  final client = sp.Supabase.instance.client;
 
   runApp(
     MultiProvider(

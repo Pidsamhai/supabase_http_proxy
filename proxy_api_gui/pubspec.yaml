@@ -42,8 +42,9 @@ dependencies:
   flutter_json_viewer: ^1.0.1
   go_router: ^2.5.7
   collection: ^1.15.0
-  supabase: ^0.2.13
   flutter_dotenv: ^5.0.2
+  supabase_flutter: ^0.2.11
+  flutter_secure_storage: ^5.0.2
 
 dev_dependencies:
   flutter_test:
