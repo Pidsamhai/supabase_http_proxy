@@ -55,10 +55,10 @@ server.all("/:template/*", async (req, res) => {
     const template: Template = <Template>doc.data;
     const path = req.path.replace(`/${req.params.template}/`, "");
     const url = `${template.baseUrl}${path}`;
-    const query: Record<string, string> = {};
+    const params: Record<string, string> = {};
     const header: Record<string, string> = {};
 
-    Object.assign(query, req.query, template.params);
+    Object.assign(params, req.query, template.params);
     Object.assign(header, template.headers);
 
     console.info({
@@ -66,7 +66,7 @@ server.all("/:template/*", async (req, res) => {
       method: req.method,
       path: path,
       header: req.headers,
-      query: req.query,
+      params: req.query,
       url: url,
     });
 
@@ -74,7 +74,7 @@ server.all("/:template/*", async (req, res) => {
       method: req.method as Method,
       headers: template.headers,
       url: url,
-      params: template.params,
+      params: params,
     });
 
     if (result.headers["Content-type"] || result.headers["content-type"]) {
