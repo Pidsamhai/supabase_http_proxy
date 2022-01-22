@@ -4,7 +4,8 @@
     "lint": "eslint --ext .js,.ts .",
     "build": "tsc",
     "watch": "tsc --watch",
-    "serve": "npm run watch | nodemon"
+    "serve": "npm run watch | nodemon",
+    "start": "node ./lib/index.js"
   },
   "main": "lib/index.js",
   "engines": {
