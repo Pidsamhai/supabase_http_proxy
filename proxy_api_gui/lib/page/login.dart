@@ -5,6 +5,7 @@ import 'package:proxy_api_gui/cubit/login_cubit.dart';
 import 'package:proxy_api_gui/router/app_router.dart';
 import 'package:go_router/go_router.dart';
 import 'package:proxy_api_gui/cubit/login_state.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -28,8 +29,8 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     if (kDebugMode) {
-      _emailTextController.text = "user@user.com";
-      _passwordTextController.text = "123456";
+      _emailTextController.text = dotenv.get("TEST_EMAIL", fallback: "");
+      _passwordTextController.text = dotenv.get("TEST_PASSWORD", fallback: "");
     }
   }
 
