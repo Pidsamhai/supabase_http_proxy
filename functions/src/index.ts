@@ -44,12 +44,15 @@ server.get("/", (_, res) => {
 
 server.all("/:template/*", async (req, res) => {
   try {
-    const doc = await client.from("template").select("*").eq("uid", req.params.template);
-    console.log(doc)
-    if (doc.data == null || doc.data.length == 0) {
+    const doc = await client
+      .from("template")
+      .select("*")
+      .eq("uid", req.params.template)
+      .single();
+    if (doc.data == null || doc.error != null) {
       throw new TemplateNotFound(req.params.template);
     }
-    const template: Template = <Template>doc.data[0];
+    const template: Template = <Template>doc.data;
     const path = req.path.replace(`/${req.params.template}/`, "");
     const url = `${template.baseUrl}${path}`;
     const query: Record<string, string> = {};
@@ -98,5 +101,5 @@ server.use((_, res) => {
 });
 
 server.listen(port, () => {
-  console.log("\x1b[36m",`Live on http://127.0.0.1:${port}`);
+  console.log("\x1b[36m", `Live on http://127.0.0.1:${port}`);
 });
