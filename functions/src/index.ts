@@ -14,7 +14,7 @@ dotenv.config();
 
 const SUPABASE_API_URL = process.env.SUPABASE_API_URL || "";
 const SUPABASE_SECRET_KEY = process.env.SUPABASE_SECRET_KEY || "";
-const port = 9000;
+const port = process.env.PORT || 9000;
 
 const client = createClient(SUPABASE_API_URL, SUPABASE_SECRET_KEY);
 const server = express();
