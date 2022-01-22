@@ -20396,7 +20396,7 @@ var $async$Ts=A.Q(function(a,b){if(a===1)return A.R(b,r)
 while(true)switch(s){case 0:if($.x==null)A.abE()
 $.x.toString
 s=2
-return A.M($.TG().vZ(0,".env"),$async$Ts)
+return A.M($.TG().vZ(0,"env.txt"),$async$Ts)
 case 2:q=$.TG().OM("SUPABASE_API_URL",null)
 q.toString
 p=$.TG().OM("SUPABASE_KEY",null)
