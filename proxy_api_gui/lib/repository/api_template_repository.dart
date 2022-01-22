@@ -29,12 +29,12 @@ class ApiTemplateRepository {
   }
 
   Future<List<Template>> getTemplates() async {
-    // final event = await _database.ref(_templateRef).get();
-    // return (event.value as Map<String, dynamic>?)?.entries.map((e) {
-    //       return Template.fromJson(e.key, e.value as Map<String, dynamic>);
-    //     }).toList() ??
-    //     [];
-    throw Exception("Not implement Yet");
+    try {
+      final result = await _client.from(_templateRef).select("*").execute();
+      return (result.data as List).map((e) => Template.fromJson(e)).toList();
+    } catch (e) {
+      return [];
+    }
   }
 
   Future<void> createTemplate(Template template) async {
