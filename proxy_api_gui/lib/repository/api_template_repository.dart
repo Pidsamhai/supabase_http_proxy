@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:proxy_api_gui/model/template.dart';
 import 'package:supabase/supabase.dart';
 import 'package:uuid/uuid.dart';
@@ -44,14 +43,6 @@ class ApiTemplateRepository {
     } catch (e) {
       rethrow;
     }
-    // try {
-    //   const uuid = Uuid();
-    //   _database.ref(_templateRef).child(uuid.v4()).set(template.toJson());
-    // } catch (e) {
-    //   rethrow;
-    // }
-
-    // throw Exception("Not implement Yet");
   }
 
   Future<Template> getTemplate({required String id}) async {
@@ -65,12 +56,11 @@ class ApiTemplateRepository {
   }
 
   Future<void> deleteTemplate({required String id}) async {
-    // try {
-    //   await _database.ref(_templateRef).child(id).remove();
-    // } catch (e) {
-    //   rethrow;
-    // }
-    throw Exception("Not implement Yet");
+    try {
+      await _client.from(_templateRef).delete().eq("uid", id).execute();
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<void> updateTemplate({required Template template}) async {
