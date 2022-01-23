@@ -8,7 +8,8 @@ import 'package:proxy_api_gui/cubit/login_state.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  final Uri? magicLink;
+  const LoginPage({Key? key, this.magicLink}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -31,6 +32,9 @@ class _LoginPageState extends State<LoginPage> {
     if (kDebugMode) {
       _emailTextController.text = dotenv.get("TEST_EMAIL", fallback: "");
       _passwordTextController.text = dotenv.get("TEST_PASSWORD", fallback: "");
+    }
+    if (widget.magicLink != null) {
+      context.read<LoginCubit>().magicLinkSingIn(widget.magicLink!);
     }
   }
 

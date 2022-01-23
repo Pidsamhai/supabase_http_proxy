@@ -22,4 +22,12 @@ class AuthRepository {
   bool get isLogged => currentUser() != null;
 
   Future<void> signOut() async => _auth.signOut();
+
+  Future<GotrueSessionResponse> magicLinkSignIn(Uri uri) async {
+    try {
+      return await _auth.getSessionFromUrl(uri);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

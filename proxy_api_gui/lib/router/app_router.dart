@@ -10,6 +10,7 @@ import 'package:proxy_api_gui/page/signup.dart';
 import 'package:proxy_api_gui/repository/auth_repository.dart';
 import 'package:provider/provider.dart';
 import 'package:proxy_api_gui/router/custom_page_transittion.dart';
+import 'package:proxy_api_gui/utils/extensions.dart';
 
 class AppRouter {
   static const login = "login";
@@ -48,7 +49,7 @@ class AppRouter {
           name: login,
           path: "/login",
           pageBuilder: (context, state) => fadePage(
-            child: const LoginPage(),
+            child: LoginPage(magicLink: state.magicLink()),
             state: state,
           ),
           redirect: (state) => _loggedInMiddleWare(context.read()),
@@ -84,7 +85,8 @@ class AppRouter {
   }
 
   static String? _authMiddleWare(AuthRepository repository) {
-    return repository.currentUser() == null ? "/login" : null;
+    final uri = Uri.parse(Uri.base.toString().replaceFirst("/#", "?"));
+    return repository.currentUser() == null ? ("/login?" + uri.query) : null;
   }
 
   static String? _loggedInMiddleWare(AuthRepository repository) {

@@ -21,4 +21,17 @@ class LoginCubit extends Cubit<LoginState> {
       emit(LoginFailure(e.toString()));
     }
   }
+
+  Future magicLinkSingIn(Uri uri) async {
+    try {
+      emit(const LoginLoading());
+      final result = await _repository.magicLinkSignIn(uri);
+      if (result.error != null) {
+        throw Exception(result.error?.message);
+      }
+      emit(LoginSuccess());
+    } catch (e) {
+      emit(LoginFailure(e.toString()));
+    }
+  }
 }
