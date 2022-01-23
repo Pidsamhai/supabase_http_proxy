@@ -1,11 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:proxy_api_gui/cubit/login_cubit.dart';
 import 'package:proxy_api_gui/cubit/signup_cubit.dart';
-import 'package:proxy_api_gui/router/app_router.dart';
-import 'package:go_router/go_router.dart';
 import 'package:proxy_api_gui/cubit/login_state.dart';
+import 'package:proxy_api_gui/widget/confirmation_email.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({Key? key}) : super(key: key);
@@ -20,6 +18,7 @@ class _SignupPageState extends State<SignupPage> {
   String get _email => _emailTextController.text;
   String get _password => _passwordTextController.text;
   bool _passwordVisible = true;
+  late SignUpCubit _cubit;
 
   _togglePasswordVisibity() {
     setState(() => _passwordVisible = !_passwordVisible);
@@ -28,6 +27,7 @@ class _SignupPageState extends State<SignupPage> {
   @override
   void initState() {
     super.initState();
+    _cubit = SignUpCubit(context.read());
     if (kDebugMode) {
       _emailTextController.text = "user@user.com";
       _passwordTextController.text = "123456";
@@ -36,17 +36,23 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
-    _login() => context.read<SignUpCubit>().signup(_email, _password);
+    _login() => _cubit.signup(_email, _password);
 
     return Scaffold(
-      body: BlocConsumer<LoginCubit, LoginState>(
+      body: BlocConsumer<SignUpCubit, LoginState>(
+        bloc: _cubit,
         listenWhen: (previous, current) => current is LoginSuccess,
         listener: (context, state) {
           if (state is LoginSuccess) {
-            // context.goNamed(AppRouter.main);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Confirmation email sent.")),
+            );
           }
         },
         builder: (context, state) {
+          if (state is LoginSuccess) {
+            return const ConfirmationEmailWidget();
+          }
           return Padding(
             padding: const EdgeInsets.all(16),
             child: Center(
