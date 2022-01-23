@@ -112,7 +112,7 @@ class _LoginPageState extends State<LoginPage> {
                       height: 48,
                       width: double.maxFinite,
                       child: ElevatedButton(
-                        onPressed: _login,
+                        onPressed: (state is LoginLoading) ? null : _login,
                         child: const Text("Login"),
                       ),
                     ),
