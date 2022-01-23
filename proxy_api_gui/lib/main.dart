@@ -31,7 +31,6 @@ void main() async {
       providers: [
         RepositoryProvider(create: (context) => AuthRepository(client.auth)),
         RepositoryProvider(create: (context) => ApiTemplateRepository(client)),
-        Provider<LoginCubit>(create: (context) => LoginCubit(context.read())),
         RepositoryProvider(create: (context) => PlayGroundRepository())
       ],
     ),

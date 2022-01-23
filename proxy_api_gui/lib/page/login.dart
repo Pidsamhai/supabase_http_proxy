@@ -21,6 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   String get _email => _emailTextController.text;
   String get _password => _passwordTextController.text;
   bool _passwordVisible = true;
+  late LoginCubit _cubit;
 
   _togglePasswordVisibity() {
     setState(() => _passwordVisible = !_passwordVisible);
@@ -29,18 +30,19 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+    _cubit = LoginCubit(context.read());
     if (kDebugMode) {
       _emailTextController.text = dotenv.get("TEST_EMAIL", fallback: "");
       _passwordTextController.text = dotenv.get("TEST_PASSWORD", fallback: "");
     }
     if (widget.magicLink != null) {
-      context.read<LoginCubit>().magicLinkSingIn(widget.magicLink!);
+      _cubit.magicLinkSingIn(widget.magicLink!);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    _login() => context.read<LoginCubit>().login(_email, _password);
+    _login() => _cubit.login(_email, _password);
 
     return Scaffold(
       body: BlocConsumer<LoginCubit, LoginState>(
