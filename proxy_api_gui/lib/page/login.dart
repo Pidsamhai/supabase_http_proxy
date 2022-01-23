@@ -46,6 +46,7 @@ class _LoginPageState extends State<LoginPage> {
 
     return Scaffold(
       body: BlocConsumer<LoginCubit, LoginState>(
+        bloc: _cubit,
         listenWhen: (previous, current) => current is LoginSuccess,
         listener: (context, state) {
           if (state is LoginSuccess) {
