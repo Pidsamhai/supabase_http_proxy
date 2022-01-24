@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
-import 'package:proxy_api_gui/cubit/login_cubit.dart';
-import 'package:proxy_api_gui/cubit/signup_cubit.dart';
 import 'package:proxy_api_gui/repository/api_template_repository.dart';
 import 'package:proxy_api_gui/repository/auth_repository.dart';
 import 'package:proxy_api_gui/repository/playground_repository.dart';
