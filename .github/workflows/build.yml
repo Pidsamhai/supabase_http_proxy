@@ -1,0 +1,58 @@
+name: Build
+on:
+  push:
+    branches:    
+      - 'feat/**'
+      - 'fix/**'
+
+jobs:
+  build_node_app:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: functions
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '17'
+      - name: Install Dependencies
+        run: npm install
+      - name: Build Node App
+        run: npm run build
+
+  build_web_app:
+    needs: build_node_app
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: proxy_api_gui
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-java@v1
+      with:
+        java-version: '11'
+    - uses: subosito/flutter-action@v1
+      with:
+        flutter-version: '2.8.1'
+        channel: 'stable'
+        
+    - name: Install dependencies
+      run: flutter pub get
+    
+    - name: Create env file
+      run: |
+        echo BASE_API_URL=$BASE_API_URL >> env.txt
+        echo SUPABASE_API_URL=$SUPABASE_API_URL >> env.txt
+        echo SUPABASE_KEY=$SUPABASE_KEY >> env.txt
+      env:
+        BASE_API_URL: "${{ secrets.BASE_API_URL }}"
+        SUPABASE_API_URL: "${{ secrets.SUPABASE_API_URL }}"
+        SUPABASE_KEY: "${{ secrets.SUPABASE_KEY }}"
+
+    - name: Build web
+      run: flutter build web --release --base-href /$BASE_HREF/ --web-renderer html
+      env:
+        BASE_HREF: ${{ github.event.repository.name }}
