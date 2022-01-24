@@ -29,11 +29,11 @@ class AuthRepository {
 
   Future<void> signOut() async => _auth.signOut();
 
-  Future<GotrueSessionResponse> magicLinkSignIn(Uri uri) async {
-    try {
-      return await _auth.getSessionFromUrl(uri);
-    } catch (e) {
-      rethrow;
-    }
+  Future<GotrueSessionResponse> magicLinkSignIn(Uri uri) {
+    return _auth.getSessionFromUrl(uri);
+  }
+
+  Future<bool> providerLogin(Provider provider) {
+    return _auth.signInWithProvider(provider);
   }
 }

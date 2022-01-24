@@ -6,6 +6,9 @@ import 'package:proxy_api_gui/router/app_router.dart';
 import 'package:go_router/go_router.dart';
 import 'package:proxy_api_gui/cubit/login_state.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:proxy_api_gui/theme/theme.dart';
+import 'package:proxy_api_gui/utils/custom_icons.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as sp;
 
 class LoginPage extends StatefulWidget {
   final Uri? magicLink;
@@ -123,6 +126,36 @@ class _LoginPageState extends State<LoginPage> {
                     if (state is LoginLoading) ...[
                       const LinearProgressIndicator(),
                     ],
+                    const SizedBox.square(dimension: 4),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ElevatedButton.icon(
+                          style:
+                              socialLoginButtonStyle(const Color(0xFF333333)),
+                          onPressed: () =>
+                              _cubit.providerLogin(sp.Provider.github),
+                          icon: const Icon(CustomIcon.mark_github),
+                          label: const Text("Github"),
+                        ),
+                        ElevatedButton.icon(
+                          style:
+                              socialLoginButtonStyle(const Color(0xFFDB4437)),
+                          onPressed: () =>
+                              _cubit.providerLogin(sp.Provider.google),
+                          icon: const Icon(CustomIcon.google),
+                          label: const Text("Google"),
+                        ),
+                        ElevatedButton.icon(
+                          style:
+                              socialLoginButtonStyle(const Color(0xFF5865F2)),
+                          onPressed: () =>
+                              _cubit.providerLogin(sp.Provider.discord),
+                          icon: const Icon(CustomIcon.discord),
+                          label: const Text("Discord"),
+                        )
+                      ],
+                    ),
                     const SizedBox.square(dimension: 4),
                     MouseRegion(
                       cursor: SystemMouseCursors.click,
