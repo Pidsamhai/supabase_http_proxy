@@ -13,6 +13,15 @@ final ButtonStyle elevatedButtonStyle = ElevatedButton.styleFrom(
   ),
 );
 
+ButtonStyle socialLoginButtonStyle(Color color) => ElevatedButton.styleFrom(
+      primary: color,
+      padding: const EdgeInsets.all(16),
+      elevation: 0,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+      ),
+    );
+
 final DialogTheme dialogTheme = DialogTheme(
   backgroundColor: Colors.purple[45],
   titleTextStyle: const TextStyle(

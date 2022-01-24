@@ -6,6 +6,10 @@ import 'package:proxy_api_gui/router/app_router.dart';
 import 'package:go_router/go_router.dart';
 import 'package:proxy_api_gui/cubit/login_state.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:proxy_api_gui/theme/theme.dart';
+import 'package:proxy_api_gui/utils/custom_icons.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as sp;
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
   final Uri? magicLink;
@@ -124,19 +128,78 @@ class _LoginPageState extends State<LoginPage> {
                       const LinearProgressIndicator(),
                     ],
                     const SizedBox.square(dimension: 4),
-                    MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: GestureDetector(
-                        child: Text(
-                          "Signup",
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.underline,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            style:
+                                socialLoginButtonStyle(const Color(0xFF333333)),
+                            onPressed: () =>
+                                _cubit.providerLogin(sp.Provider.github),
+                            icon: const Icon(CustomIcon.mark_github),
+                            label: const Text("Github"),
                           ),
                         ),
-                        onTap: () => context.goNamed(AppRouter.signup),
-                      ),
+                        const SizedBox.square(dimension: 8),
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            style:
+                                socialLoginButtonStyle(const Color(0xFFDB4437)),
+                            onPressed: () =>
+                                _cubit.providerLogin(sp.Provider.google),
+                            icon: const Icon(CustomIcon.google),
+                            label: const Text("Google"),
+                          ),
+                        ),
+                        const SizedBox.square(dimension: 8),
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            style:
+                                socialLoginButtonStyle(const Color(0xFF5865F2)),
+                            onPressed: () =>
+                                _cubit.providerLogin(sp.Provider.discord),
+                            icon: const Icon(CustomIcon.discord),
+                            label: const Text("Discord"),
+                          ),
+                        )
+                      ],
+                    ),
+                    const SizedBox.square(dimension: 4),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: GestureDetector(
+                            child: Text(
+                              "Signup",
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                            onTap: () => context.goNamed(AppRouter.signup),
+                          ),
+                        ),
+                        SizedBox.fromSize(size: const Size(24, 16)),
+                        MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: GestureDetector(
+                            child: Text(
+                              "Privacy policy",
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                            onTap: () =>
+                                launch("${Uri.base.origin}/policy.html"),
+                          ),
+                        )
+                      ],
                     )
                   ],
                 ),

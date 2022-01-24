@@ -14,7 +14,13 @@ class AuthRepository {
     required String email,
     required String password,
   }) {
-    return _auth.signUp(email, password);
+    return _auth.signUp(
+      email,
+      password,
+      options: AuthOptions(
+        redirectTo: Uri.base.origin,
+      ),
+    );
   }
 
   User? currentUser() => _auth.session()?.user;
@@ -23,11 +29,11 @@ class AuthRepository {
 
   Future<void> signOut() async => _auth.signOut();
 
-  Future<GotrueSessionResponse> magicLinkSignIn(Uri uri) async {
-    try {
-      return await _auth.getSessionFromUrl(uri);
-    } catch (e) {
-      rethrow;
-    }
+  Future<GotrueSessionResponse> magicLinkSignIn(Uri uri) {
+    return _auth.getSessionFromUrl(uri);
+  }
+
+  Future<bool> providerLogin(Provider provider) {
+    return _auth.signInWithProvider(provider);
   }
 }
