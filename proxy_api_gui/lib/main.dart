@@ -23,6 +23,16 @@ void main() async {
 
   final client = sp.Supabase.instance.client;
 
+  /**
+   * Check user account has deleted
+   * then signout
+   */
+  final result = await client.auth.refreshSession();
+
+  if (result.error != null) {
+    await client.auth.signOut();
+  }
+
   runApp(
     MultiProvider(
       child: const MyApp(),
