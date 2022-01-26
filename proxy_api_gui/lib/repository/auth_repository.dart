@@ -14,13 +14,7 @@ class AuthRepository {
     required String email,
     required String password,
   }) {
-    return _auth.signUp(
-      email,
-      password,
-      options: AuthOptions(
-        redirectTo: Uri.base.origin,
-      ),
-    );
+    return _auth.signUp(email, password);
   }
 
   User? currentUser() => _auth.session()?.user;
