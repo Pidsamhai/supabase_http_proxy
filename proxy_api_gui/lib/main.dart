@@ -56,25 +56,7 @@ class MyApp extends StatelessWidget {
       routerDelegate: routes.routerDelegate,
       debugShowCheckedModeBanner: false,
       title: 'Proxy Api',
-      theme: ThemeData.from(colorScheme: const ColorScheme.light()).copyWith(
-        elevatedButtonTheme:
-            ElevatedButtonThemeData(style: elevatedButtonStyle),
-        cardTheme: CardTheme(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          elevation: 0,
-          highlightElevation: 4,
-          hoverElevation: 2,
-          extendedTextStyle: TextStyle(color: Colors.white),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(16)),
-          ),
-        ),
-        dialogTheme: dialogTheme,
-      ),
+      theme: appThemeData(context),
     );
   }
 }

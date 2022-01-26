@@ -6,6 +6,7 @@ import 'package:proxy_api_gui/repository/api_template_repository.dart';
 import 'package:proxy_api_gui/repository/auth_repository.dart';
 import 'package:proxy_api_gui/router/app_router.dart';
 import 'package:proxy_api_gui/widget/dialog.dart';
+import 'package:proxy_api_gui/widget/profile.dart';
 import 'package:proxy_api_gui/widget/template_card.dart';
 import 'package:go_router/go_router.dart';
 
@@ -97,18 +98,22 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       body: Column(
         children: [
-          Align(
-            alignment: Alignment.topLeft,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                "Api Template",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline5
-                    ?.copyWith(fontWeight: FontWeight.bold),
-              ),
-            ),
+          // Align(
+          //   alignment: Alignment.topLeft,
+          //   child: Padding(
+          //     padding: const EdgeInsets.all(16.0),
+          //     child: Text(
+          //       "Api Template",
+          //       style: Theme.of(context)
+          //           .textTheme
+          //           .headline5
+          //           ?.copyWith(fontWeight: FontWeight.bold),
+          //     ),
+          //   ),
+          // ),
+          AppBar(
+            title: Text("Api Template"),
+            actions: [ProfilePic()],
           ),
           Flexible(
             child: Container(
