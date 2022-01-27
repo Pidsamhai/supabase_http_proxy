@@ -2,8 +2,8 @@ name: Build
 on:
   pull_request:
     branches:    
-      - 'feat/**'
-      - 'fix/**'
+      - 'main'
+      - 'dev'
 
 jobs:
   build_node_app:

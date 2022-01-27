@@ -37,7 +37,11 @@ void main() async {
     MultiProvider(
       child: const MyApp(),
       providers: [
-        RepositoryProvider(create: (context) => AuthRepository(client.auth)),
+        RepositoryProvider(
+            create: (context) => AuthRepository(
+                  client.auth,
+                  dotenv.get("AUTH_REDIRECT_URL"),
+                )),
         RepositoryProvider(create: (context) => ApiTemplateRepository(client)),
         RepositoryProvider(create: (context) => PlayGroundRepository())
       ],
