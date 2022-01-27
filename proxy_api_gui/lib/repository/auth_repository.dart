@@ -4,7 +4,8 @@ import 'package:http/http.dart' as http;
 
 class AuthRepository {
   final GoTrueClient _auth;
-  AuthRepository(this._auth);
+  final String? _redirectUrl;
+  AuthRepository(this._auth, this._redirectUrl);
 
   Future<GotrueResponse> login({
     required String email,
@@ -20,7 +21,7 @@ class AuthRepository {
       email,
       password,
       options: AuthOptions(
-        redirectTo: Uri.base.origin,
+        redirectTo: _redirectUrl,
       ),
     );
   }
@@ -36,7 +37,12 @@ class AuthRepository {
   }
 
   Future<bool> providerLogin(Provider provider) {
-    return _auth.signInWithProvider(provider);
+    return _auth.signInWithProvider(
+      provider,
+      options: AuthOptions(
+        redirectTo: _redirectUrl,
+      ),
+    );
   }
 
   Future<bool> deleteAccount() async {
