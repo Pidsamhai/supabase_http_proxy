@@ -2,7 +2,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthRepository {
   final GoTrueClient _auth;
-  AuthRepository(this._auth);
+  final String? _redirectUrl;
+  AuthRepository(this._auth, this._redirectUrl);
 
   Future<GotrueResponse> login({
     required String email,
@@ -14,7 +15,13 @@ class AuthRepository {
     required String email,
     required String password,
   }) {
-    return _auth.signUp(email, password);
+    return _auth.signUp(
+      email,
+      password,
+      options: AuthOptions(
+        redirectTo: _redirectUrl,
+      ),
+    );
   }
 
   User? currentUser() => _auth.session()?.user;
@@ -28,6 +35,11 @@ class AuthRepository {
   }
 
   Future<bool> providerLogin(Provider provider) {
-    return _auth.signInWithProvider(provider);
+    return _auth.signInWithProvider(
+      provider,
+      options: AuthOptions(
+        redirectTo: _redirectUrl,
+      ),
+    );
   }
 }
