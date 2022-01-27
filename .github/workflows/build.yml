@@ -47,10 +47,12 @@ jobs:
         echo BASE_API_URL=$BASE_API_URL >> env.txt
         echo SUPABASE_API_URL=$SUPABASE_API_URL >> env.txt
         echo SUPABASE_KEY=$SUPABASE_KEY >> env.txt
+        echo AUTH_REDIRECT_URL=$AUTH_REDIRECT_URL >> env.txt
       env:
         BASE_API_URL: "${{ secrets.BASE_API_URL }}"
         SUPABASE_API_URL: "${{ secrets.SUPABASE_API_URL }}"
         SUPABASE_KEY: "${{ secrets.SUPABASE_KEY }}"
+        AUTH_REDIRECT_URL: "${ secrets.AUTH_REDIRECT_URL }"
 
     - name: Build web
       run: flutter build web --release --base-href /$BASE_HREF/ --web-renderer html
