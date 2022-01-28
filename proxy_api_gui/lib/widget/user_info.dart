@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:proxy_api_gui/model/email_metadata.dart';
 import 'package:proxy_api_gui/model/user_metadata.dart';
 import 'package:proxy_api_gui/repository/auth_repository.dart';
 import 'package:proxy_api_gui/router/app_router.dart';
@@ -18,9 +19,12 @@ class UserInfoWidget extends StatefulWidget {
 class _UserInfoWidgetState extends State<UserInfoWidget> {
   bool isLoading = false;
   bool preDeleteAccount = false;
+  bool preUpdateUserInfo = false;
   User? user;
   UserMetadata? metadata;
   final TextEditingController uidController = TextEditingController();
+  final TextEditingController fullNameController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
   bool get _isMatchUid => uidController.text == user?.id;
 
   @override
@@ -35,6 +39,7 @@ class _UserInfoWidgetState extends State<UserInfoWidget> {
     if (!preDeleteAccount) {
       setState(() {
         preDeleteAccount = true;
+        preUpdateUserInfo = false;
       });
       return;
     }
@@ -48,6 +53,28 @@ class _UserInfoWidgetState extends State<UserInfoWidget> {
     context.goNamed(AppRouter.login);
   }
 
+  Future<void> _updateUserInfo() async {
+    if (!preUpdateUserInfo) {
+      setState(() {
+        preUpdateUserInfo = true;
+        preDeleteAccount = false;
+      });
+      return;
+    }
+    setState(() {
+      isLoading = true;
+    });
+    final email = Email(
+      fullName: fullNameController.text,
+      name: nameController.text,
+    );
+    await context.read<AuthRepository>().updateEmailMetadata(email);
+    setState(() {
+      isLoading = false;
+      preUpdateUserInfo = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -58,19 +85,35 @@ class _UserInfoWidgetState extends State<UserInfoWidget> {
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: metadata!.join(
-            (p0) => _noContent(),
+            (email) => _content(
+              email: user?.email,
+              profileName: email.fullName,
+              profilePicUrl:
+                  "https://ui-avatars.com/api/?name=${user?.email?[0]}",
+              userName: email.name,
+              providers: "Email",
+              userId: user?.id,
+            ),
             (github) => _content(
+              email: github.email,
               profileName: github.fullName,
               profilePicUrl: github.avatarUrl,
               providers: "Github",
               userName: github.userName,
               userId: user?.id,
             ),
-            (p0) => _noContent(),
+            (discord) => _content(
+              email: discord.email,
+              profileName: discord.fullName,
+              profilePicUrl: discord.avatarUrl,
+              providers: "Discord",
+              userId: user?.id,
+            ),
             (google) => _content(
+              email: google.email,
               profileName: google.fullName,
               profilePicUrl: google.avatarUrl,
-              providers: "google",
+              providers: "Google",
               userId: user?.id,
             ),
             (raw) => _content(
@@ -84,6 +127,7 @@ class _UserInfoWidgetState extends State<UserInfoWidget> {
   }
 
   Widget _content({
+    String? email,
     String? profileName,
     String? profilePicUrl,
     String? providers,
@@ -101,47 +145,43 @@ class _UserInfoWidgetState extends State<UserInfoWidget> {
           ),
         ),
         const SizedBox.square(dimension: 16),
-        Text(
+        SelectableText(
           (profileName ?? "") + (userName != null ? "($userName)" : ""),
           style: Theme.of(context).textTheme.headline6,
         ),
         const SizedBox.square(dimension: 16),
-        if (preDeleteAccount) ...[
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox.square(dimension: 16),
-              const Text(
-                "Confirm you want to delete account by typing its",
-                style: TextStyle(color: Colors.red),
-              ),
-              const SizedBox.square(dimension: 4),
-              SelectableText(
-                "UID: $userId",
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox.square(dimension: 4),
-              TextField(
-                decoration: InputDecoration(
-                    label: const Text(""),
-                    border: const OutlineInputBorder(),
-                    hintText: userId),
-                controller: uidController,
-              )
-            ],
+        SelectableText("Email : $email"),
+        const SizedBox.square(dimension: 8),
+        SelectableText("Provider : $providers"),
+        if (preDeleteAccount) ...[_deleteAccountConfirmation(userId)],
+        if (preUpdateUserInfo) ...[
+          _updateUserInfoWidget(
+            fullName: profileName,
+            name: userName,
           )
         ],
         const SizedBox.square(dimension: 16),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            primary: Colors.red,
-          ),
-          onPressed: (isLoading || preDeleteAccount && !_isMatchUid)
-              ? null
-              : _deleteAccount,
-          child: const Text("Delete Account"),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (metadata?.isEmail() == true) ...[
+              ElevatedButton(
+                onPressed: (isLoading) ? null : _updateUserInfo,
+                child:
+                    Text(!preUpdateUserInfo ? "Edit profile" : "Save profile"),
+              ),
+            ],
+            const SizedBox.square(dimension: 16),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.red,
+              ),
+              onPressed: (isLoading || preDeleteAccount && !_isMatchUid)
+                  ? null
+                  : _deleteAccount,
+              child: const Text("Delete Account"),
+            )
+          ],
         ),
         const SizedBox.square(dimension: 16),
         Row(
@@ -157,9 +197,65 @@ class _UserInfoWidgetState extends State<UserInfoWidget> {
     );
   }
 
+  Column _deleteAccountConfirmation(String? userId) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox.square(dimension: 16),
+        const Text(
+          "Confirm you want to delete account by typing its",
+          style: TextStyle(color: Colors.red),
+        ),
+        const SizedBox.square(dimension: 4),
+        SelectableText(
+          "UID: $userId",
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox.square(dimension: 4),
+        TextField(
+          decoration: InputDecoration(
+              label: const Text(""),
+              border: const OutlineInputBorder(),
+              hintText: userId),
+          controller: uidController,
+        )
+      ],
+    );
+  }
+
   Widget _noContent() {
     return const Center(
       child: Text("No content avilable"),
+    );
+  }
+
+  Widget _updateUserInfoWidget({
+    String? fullName,
+    String? name,
+  }) {
+    fullNameController.text = fullName ?? "";
+    nameController.text = name ?? "";
+    return Column(
+      children: [
+        const SizedBox.square(dimension: 16),
+        TextField(
+          decoration: const InputDecoration(
+            label: Text("Full Name"),
+            border: OutlineInputBorder(),
+          ),
+          controller: fullNameController,
+        ),
+        const SizedBox.square(dimension: 16),
+        TextField(
+          decoration: const InputDecoration(
+            label: Text("Name"),
+            border: OutlineInputBorder(),
+          ),
+          controller: nameController,
+        )
+      ],
     );
   }
 }

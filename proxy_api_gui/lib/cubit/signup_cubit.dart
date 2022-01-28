@@ -9,12 +9,10 @@ class SignUpCubit extends Cubit<LoginState> {
   Future signup(String email, String password) async {
     try {
       emit(const LoginLoading());
-      final session = await _repository.signUp(
+      await _repository.signUp(
         email: email,
         password: password,
       );
-      print(session);
-      print(session.user);
       emit(LoginSuccess());
     } catch (e) {
       emit(LoginFailure(e.toString()));

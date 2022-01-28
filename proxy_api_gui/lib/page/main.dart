@@ -98,22 +98,11 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       body: Column(
         children: [
-          // Align(
-          //   alignment: Alignment.topLeft,
-          //   child: Padding(
-          //     padding: const EdgeInsets.all(16.0),
-          //     child: Text(
-          //       "Api Template",
-          //       style: Theme.of(context)
-          //           .textTheme
-          //           .headline5
-          //           ?.copyWith(fontWeight: FontWeight.bold),
-          //     ),
-          //   ),
-          // ),
           AppBar(
-            title: Text("Api Template"),
-            actions: [ProfilePic()],
+            title: const Text("Api Template"),
+            actions: const [
+              ProfilePic(),
+            ],
           ),
           Flexible(
             child: Container(

@@ -1,3 +1,4 @@
+import 'package:proxy_api_gui/model/email_metadata.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -51,10 +52,18 @@ class AuthRepository {
       final userId = currentUser()!.id;
       final response = await http.delete(Uri.parse("$baseUrl/user/$userId"));
       await _auth.signOut();
-      return [400, 404, 204].contains(response.statusCode);
+      return response.statusCode == 204;
     } catch (e) {
-      print(e);
       return false;
     }
+  }
+
+  Future<void> updateEmailMetadata(Email email) async {
+    await _auth.update(
+      UserAttributes(
+        data: email,
+      ),
+    );
+    await _auth.refreshSession();
   }
 }
