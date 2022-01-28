@@ -48,7 +48,9 @@ jobs:
         AUTH_REDIRECT_URL: "${{ secrets.AUTH_REDIRECT_URL }}"
 
     - name: Build web
-      run: flutter build web --release --base-href /$BASE_HREF/ --web-renderer html
+      run: |
+        flutter build web --release --base-href /$BASE_HREF/ --web-renderer html
+        cp build/web/index.html build/web/404.html
       env:
         BASE_HREF: ${{ github.event.repository.name }}
 
