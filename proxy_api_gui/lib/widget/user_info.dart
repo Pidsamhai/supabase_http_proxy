@@ -75,6 +75,16 @@ class _UserInfoWidgetState extends State<UserInfoWidget> {
     });
   }
 
+  Future<void> _resetPassword() async {
+    setState(() {
+      isLoading = true;
+    });
+    await context.read<AuthRepository>().resetPassword();
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -161,28 +171,9 @@ class _UserInfoWidgetState extends State<UserInfoWidget> {
           )
         ],
         const SizedBox.square(dimension: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (metadata?.isEmail() == true) ...[
-              ElevatedButton(
-                onPressed: (isLoading) ? null : _updateUserInfo,
-                child:
-                    Text(!preUpdateUserInfo ? "Edit profile" : "Save profile"),
-              ),
-            ],
-            const SizedBox.square(dimension: 16),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.red,
-              ),
-              onPressed: (isLoading || preDeleteAccount && !_isMatchUid)
-                  ? null
-                  : _deleteAccount,
-              child: const Text("Delete Account"),
-            )
-          ],
-        ),
+        (MediaQuery.of(context).size.width <= 580)
+            ? _columnActions()
+            : _rowActions(),
         const SizedBox.square(dimension: 16),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -257,5 +248,44 @@ class _UserInfoWidgetState extends State<UserInfoWidget> {
         )
       ],
     );
+  }
+
+  Widget _columnActions() {
+    return Column(
+      children: _actionButtons(),
+    );
+  }
+
+  Widget _rowActions() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: _actionButtons(),
+    );
+  }
+
+  List<Widget> _actionButtons() {
+    return [
+      if (metadata?.isEmail() == true) ...[
+        ElevatedButton(
+          onPressed: (isLoading) ? null : _updateUserInfo,
+          child: Text(!preUpdateUserInfo ? "Edit profile" : "Save profile"),
+        ),
+      ],
+      const SizedBox.square(dimension: 16),
+      ElevatedButton(
+        onPressed: isLoading ? null : _resetPassword,
+        child: const Text("Reset password"),
+      ),
+      const SizedBox.square(dimension: 16),
+      ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: Colors.red,
+        ),
+        onPressed: (isLoading || preDeleteAccount && !_isMatchUid)
+            ? null
+            : _deleteAccount,
+        child: const Text("Delete Account"),
+      )
+    ];
   }
 }

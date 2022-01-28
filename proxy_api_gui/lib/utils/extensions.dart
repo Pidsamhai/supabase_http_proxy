@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:go_router/go_router.dart';
 import 'package:proxy_api_gui/model/discord_metadat.dart';
 import 'package:proxy_api_gui/model/email_metadata.dart';
@@ -46,5 +44,16 @@ extension SupabaseUser on User {
     } catch (e) {}
 
     return metadata;
+  }
+}
+
+extension MapExtensions on Map<String, String> {
+  bool containsKeys(List<String> keys) {
+    for (var key in keys) {
+      if (!containsKey(key)) {
+        return false;
+      }
+    }
+    return true;
   }
 }
