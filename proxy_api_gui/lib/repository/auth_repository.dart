@@ -86,4 +86,11 @@ class AuthRepository {
       ),
     );
   }
+
+  Future<GotrueJsonResponse> sendPasswordResetEmail(String email) {
+    return _auth.api.resetPasswordForEmail(
+      email,
+      options: _defaultAuthOption,
+    );
+  }
 }

@@ -8,6 +8,7 @@ import 'package:proxy_api_gui/cubit/login_state.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:proxy_api_gui/theme/theme.dart';
 import 'package:proxy_api_gui/utils/custom_icons.dart';
+import 'package:proxy_api_gui/widget/link_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as sp;
 import 'package:url_launcher/url_launcher.dart';
 
@@ -169,35 +170,21 @@ class _LoginPageState extends State<LoginPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        MouseRegion(
-                          cursor: SystemMouseCursors.click,
-                          child: GestureDetector(
-                            child: Text(
-                              "Signup",
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.primary,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                            onTap: () => context.goNamed(AppRouter.signup),
-                          ),
+                        LinkButton(
+                          onPressed: () => context.goNamed(AppRouter.signup),
+                          text: "Signup",
                         ),
                         SizedBox.fromSize(size: const Size(24, 16)),
-                        MouseRegion(
-                          cursor: SystemMouseCursors.click,
-                          child: GestureDetector(
-                            child: Text(
-                              "Privacy policy",
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.primary,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                            onTap: () =>
-                                launch("${Uri.base.origin}/policy.html"),
-                          ),
+                        LinkButton(
+                          onPressed: () =>
+                              launch("${Uri.base.origin}/policy.html"),
+                          text: "Privacy policy",
+                        ),
+                        SizedBox.fromSize(size: const Size(24, 16)),
+                        LinkButton(
+                          onPressed: () =>
+                              context.goNamed(AppRouter.passwordRecovery),
+                          text: "Forgot password",
                         )
                       ],
                     )
