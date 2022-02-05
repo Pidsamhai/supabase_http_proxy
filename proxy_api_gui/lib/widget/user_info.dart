@@ -20,6 +20,7 @@ class _UserInfoWidgetState extends State<UserInfoWidget> {
   bool isLoading = false;
   bool preDeleteAccount = false;
   bool preUpdateUserInfo = false;
+  bool preUpdatePassword = false;
   User? user;
   UserMetadata? metadata;
   final TextEditingController uidController = TextEditingController();
@@ -75,14 +76,8 @@ class _UserInfoWidgetState extends State<UserInfoWidget> {
     });
   }
 
-  Future<void> _resetPassword() async {
-    setState(() {
-      isLoading = true;
-    });
-    await context.read<AuthRepository>().resetPassword();
-    setState(() {
-      isLoading = false;
-    });
+  _navigateToUserUpdatePassword() {
+    context.goNamed(AppRouter.passwordRecovery, extra: {"user_update": true});
   }
 
   @override
@@ -216,12 +211,6 @@ class _UserInfoWidgetState extends State<UserInfoWidget> {
     );
   }
 
-  Widget _noContent() {
-    return const Center(
-      child: Text("No content avilable"),
-    );
-  }
-
   Widget _updateUserInfoWidget({
     String? fullName,
     String? name,
@@ -273,8 +262,8 @@ class _UserInfoWidgetState extends State<UserInfoWidget> {
       ],
       const SizedBox.square(dimension: 16),
       ElevatedButton(
-        onPressed: isLoading ? null : _resetPassword,
-        child: const Text("Reset password"),
+        onPressed: isLoading ? null : _navigateToUserUpdatePassword,
+        child: const Text("Change password"),
       ),
       const SizedBox.square(dimension: 16),
       ElevatedButton(

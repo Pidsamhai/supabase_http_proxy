@@ -5,14 +5,17 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:proxy_api_gui/cubit/send_password_reset_cubit.dart';
 import 'package:proxy_api_gui/cubit/update_password_cubit.dart';
 import 'package:go_router/go_router.dart';
-import 'package:proxy_api_gui/repository/auth_repository.dart';
 import 'package:proxy_api_gui/router/app_router.dart';
-
-enum RecoveryState { requestPasswordReset, newPassword, expried }
+import 'package:proxy_api_gui/widget/confirm_password_form.dart';
 
 class PasswordResetPage extends StatefulWidget {
   final String? _jwt;
-  const PasswordResetPage(this._jwt, {Key? key}) : super(key: key);
+  final bool userUpdate;
+  const PasswordResetPage(
+    this._jwt, {
+    Key? key,
+    this.userUpdate = false,
+  }) : super(key: key);
 
   @override
   _PasswordResetPageState createState() => _PasswordResetPageState();
@@ -29,23 +32,29 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
       _requestPasswordResetKey.currentState?.validate() == true;
 
   Widget get _content {
+    if ((widget._jwt != null && !JwtDecoder.isExpired(widget._jwt!)) ||
+        widget.userUpdate) {
+      return _newPasswordContent(context);
+    }
+
     if (widget._jwt == null) {
       return _requestResetpassword();
     }
-    if (JwtDecoder.isExpired(widget._jwt!)) {
-      return _expriedLink();
-    } else {
-      return _newPasswordContent(context);
-    }
+
+    return _expriedLink();
   }
 
   late UpdatePasswordCubit _cubit;
 
   _updatePassword() {
-    _cubit.updatePassword(
-      widget._jwt!,
-      _passwordController.text,
-    );
+    if (widget.userUpdate) {
+      _cubit.updateUserPassword(_passwordController.text);
+    } else {
+      _cubit.updatePassword(
+        widget._jwt!,
+        _passwordController.text,
+      );
+    }
   }
 
   _rebuilder() => setState(() => {});
@@ -64,6 +73,7 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
     super.dispose();
     _passwordController.removeListener(_rebuilder);
     _passwordConfirmController.removeListener(_rebuilder);
+    _emailController.removeListener(_rebuilder);
   }
 
   @override
@@ -84,73 +94,50 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
       builder: (context, state) {
         final bool _isLoading = state is UpdatePasswordLoading;
         if (state is UpdatePasswordSuccess) {
-          return _updateSuccess();
+          if (widget.userUpdate) {
+            return _updateSuccessBackToMain();
+          }
+          return _updateSuccessBackToLogin();
         }
-        return Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "Password recovery",
+              style: Theme.of(context)
+                  .textTheme
+                  .headline4
+                  ?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            ConfirmPasswordForm(
+              formKey: _formKey,
+              passwordController: _passwordController,
+              passwordConfirmController: _passwordConfirmController,
+            ),
+            const SizedBox.square(dimension: 16),
+            SizedBox(
+              height: 48,
+              width: double.maxFinite,
+              child: ElevatedButton(
+                onPressed: (_newPasswordIsValid || _isLoading)
+                    ? _updatePassword
+                    : null,
+                child: const Text("Save"),
+              ),
+            ),
+            if (state is UpdatePasswordFail) ...[
+              const SizedBox.square(dimension: 8),
               Text(
-                "Password recovery",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline4
-                    ?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox.square(dimension: 16),
-              TextFormField(
-                controller: _passwordController,
-                autovalidateMode: AutovalidateMode.always,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Password',
-                ),
-                validator: (String? value) {
-                  return ((value?.trim().length ?? 0) < 6)
-                      ? 'Password must be greater than 6 digit *'
-                      : null;
-                },
-              ),
-              const SizedBox.square(dimension: 16),
-              TextFormField(
-                autovalidateMode: AutovalidateMode.always,
-                controller: _passwordConfirmController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Confirm Password',
-                ),
-                validator: (String? value) {
-                  return value != _passwordController.text
-                      ? 'Password not match *'
-                      : null;
-                },
-              ),
-              const SizedBox.square(dimension: 16),
-              SizedBox(
-                height: 48,
-                width: double.maxFinite,
-                child: ElevatedButton(
-                  onPressed: (_newPasswordIsValid || _isLoading)
-                      ? _updatePassword
-                      : null,
-                  child: const Text("Save"),
-                ),
-              ),
-              if (state is UpdatePasswordFail) ...[
-                const SizedBox.square(dimension: 8),
-                Text(
-                  state.msg,
-                  style: const TextStyle(color: Colors.red),
-                )
-              ],
-              if (_isLoading) ...[
-                const SizedBox.square(dimension: 8),
-                const LinearProgressIndicator()
-              ],
+                state.msg,
+                style: const TextStyle(color: Colors.red),
+              )
             ],
-          ),
+            if (_isLoading) ...[
+              const SizedBox.square(dimension: 8),
+              const LinearProgressIndicator()
+            ],
+          ],
         );
       },
     );
@@ -176,7 +163,14 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
     );
   }
 
-  Widget _updateSuccess() {
+  Widget _btnBackToMainPage() {
+    return ElevatedButton(
+      onPressed: () => context.goNamed(AppRouter.login),
+      child: const Text("Back"),
+    );
+  }
+
+  Widget _updateSuccessBackToLogin() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -184,6 +178,19 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
           const Text("Password has been updated"),
           const SizedBox.square(dimension: 16),
           _btnBackToLoginPage()
+        ],
+      ),
+    );
+  }
+
+  Widget _updateSuccessBackToMain() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text("Password has been updated"),
+          const SizedBox.square(dimension: 16),
+          _btnBackToMainPage()
         ],
       ),
     );

@@ -16,4 +16,14 @@ class UpdatePasswordCubit extends Cubit<UpdatePasswordState> {
       emit(UpdatePasswordFail(e.toString()));
     }
   }
+
+  Future<void> updateUserPassword(String password) async {
+    try {
+      emit(const UpdatePasswordLoading());
+      await _repository.updateUserPassword(password);
+      emit(const UpdatePasswordSuccess());
+    } catch (e) {
+      emit(UpdatePasswordFail(e.toString()));
+    }
+  }
 }

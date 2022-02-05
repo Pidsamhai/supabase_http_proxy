@@ -86,7 +86,12 @@ class AppRouter {
           name: passwordRecovery,
           path: "/recovery",
           pageBuilder: (context, state) => materialPage(
-            child: PasswordResetPage(state.queryParams["access_token"]),
+            child: PasswordResetPage(
+              state.queryParams["access_token"],
+              userUpdate: (state.extra as Map<String, dynamic>?)
+                      ?.containsKey("user_update") ==
+                  true,
+            ),
             state: state,
           ),
           redirect: (state) => _checkRecoveryToken(state),
@@ -124,7 +129,9 @@ class AppRouter {
     ];
     if (state.queryParams.containsKeys(keyCheck) &&
             state.queryParams["type"] == "recovery" ||
-        state.queryParams.isEmpty) {
+        state.queryParams.isEmpty ||
+        (state.extra as Map<String, dynamic>?)?.containsKey("user_update") ==
+            true) {
       return null;
     }
     return "/login";

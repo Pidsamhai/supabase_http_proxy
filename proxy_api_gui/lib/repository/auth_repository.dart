@@ -87,6 +87,17 @@ class AuthRepository {
     );
   }
 
+  Future<GotrueUserResponse> updateUserPassword(
+    String newPassword,
+  ) {
+    return _auth.api.updateUser(
+      _auth.currentSession!.accessToken,
+      UserAttributes(
+        password: newPassword,
+      ),
+    );
+  }
+
   Future<GotrueJsonResponse> sendPasswordResetEmail(String email) {
     return _auth.api.resetPasswordForEmail(
       email,
