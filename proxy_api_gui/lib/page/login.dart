@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:proxy_api_gui/theme/theme.dart';
 import 'package:proxy_api_gui/utils/custom_icons.dart';
+import 'package:proxy_api_gui/widget/email_password_form.dart';
 import 'package:proxy_api_gui/widget/link_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as sp;
 import 'package:url_launcher/url_launcher.dart';
@@ -21,16 +22,16 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
   final _emailTextController = TextEditingController();
   final _passwordTextController = TextEditingController();
   String get _email => _emailTextController.text;
   String get _password => _passwordTextController.text;
-  bool _passwordVisible = true;
   late LoginCubit _cubit;
 
-  _togglePasswordVisibity() {
-    setState(() => _passwordVisible = !_passwordVisible);
-  }
+  bool get _formIsValid => _formKey.currentState?.validate() == true;
+
+  _rebuilder() => setState(() => {});
 
   @override
   void initState() {
@@ -43,6 +44,15 @@ class _LoginPageState extends State<LoginPage> {
     if (widget.magicLink != null) {
       _cubit.magicLinkSingIn(widget.magicLink!);
     }
+    _emailTextController.addListener(_rebuilder);
+    _passwordTextController.addListener(_rebuilder);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _emailTextController.removeListener(_rebuilder);
+    _passwordTextController.removeListener(_rebuilder);
   }
 
   @override
@@ -76,34 +86,10 @@ class _LoginPageState extends State<LoginPage> {
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox.square(dimension: 16),
-                    Container(
-                      constraints: const BoxConstraints(maxWidth: 500),
-                      child: TextField(
-                        controller: _emailTextController,
-                        decoration: const InputDecoration(
-                            border: OutlineInputBorder(), hintText: "Email"),
-                      ),
-                    ),
-                    const SizedBox.square(dimension: 16),
-                    Container(
-                      constraints: const BoxConstraints(maxWidth: 500),
-                      child: TextField(
-                        controller: _passwordTextController,
-                        obscureText: _passwordVisible,
-                        enableSuggestions: false,
-                        autocorrect: false,
-                        decoration: InputDecoration(
-                            border: const OutlineInputBorder(),
-                            hintText: "Password",
-                            suffixIcon: IconButton(
-                              onPressed: _togglePasswordVisibity,
-                              icon: Icon(_passwordVisible
-                                  ? Icons.visibility
-                                  : Icons.visibility_off),
-                            )),
-                        keyboardType: TextInputType.visiblePassword,
-                        onSubmitted: (value) => _login(),
-                      ),
+                    EmailPasswordForm(
+                      formKey: _formKey,
+                      emailController: _emailTextController,
+                      passwordController: _passwordTextController,
                     ),
                     const SizedBox.square(dimension: 16),
                     if (state is FailureState) ...[
@@ -120,7 +106,9 @@ class _LoginPageState extends State<LoginPage> {
                       height: 48,
                       width: double.maxFinite,
                       child: ElevatedButton(
-                        onPressed: (state is LoadingState) ? null : _login,
+                        onPressed: (state is LoadingState || !_formIsValid)
+                            ? null
+                            : _login,
                         child: const Text("Login"),
                       ),
                     ),
