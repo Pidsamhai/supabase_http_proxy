@@ -1,23 +1,21 @@
 import 'package:bloc/bloc.dart';
+import 'package:proxy_api_gui/cubit/basic_state.dart';
 import 'package:proxy_api_gui/repository/auth_repository.dart';
 
-part 'send_password_reset_state.dart';
-
-class SendPasswordResetCubit extends Cubit<SendPasswordResetState> {
+class SendPasswordResetCubit extends Cubit<BasicState> {
   final AuthRepository _repository;
-  SendPasswordResetCubit(this._repository)
-      : super(const SendPasswordResetInitial());
+  SendPasswordResetCubit(this._repository) : super(const InitailState());
 
   Future<void> sendPasswordResetEmail(String email) async {
     try {
-      emit(const SendPasswordResetLoading());
+      emit(const LoadingState());
       final result = await _repository.sendPasswordResetEmail(email);
       if (result.error != null) {
         throw Exception(result.error?.message);
       }
-      emit(const SendPasswordResetSuccess());
+      emit(const SuccessState());
     } catch (e) {
-      emit(SendPasswordResetFail(e.toString()));
+      emit(FailureState(e.toString()));
     }
   }
 }
