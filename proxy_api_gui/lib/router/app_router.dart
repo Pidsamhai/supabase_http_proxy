@@ -5,6 +5,7 @@ import 'package:proxy_api_gui/page/edit_template.dart';
 import 'package:proxy_api_gui/page/error_page.dart';
 import 'package:proxy_api_gui/page/login.dart';
 import 'package:proxy_api_gui/page/main.dart';
+import 'package:proxy_api_gui/page/password_reset.dart';
 import 'package:proxy_api_gui/page/playground.dart';
 import 'package:proxy_api_gui/page/signup.dart';
 import 'package:proxy_api_gui/repository/auth_repository.dart';
@@ -19,6 +20,7 @@ class AppRouter {
   static const createTemplate = "create";
   static String editTemplate(String id) => "/edit/$id";
   static const playground = "playground";
+  static const passwordRecovery = "recovery";
   static GoRouter routes(BuildContext context) {
     return GoRouter(
       urlPathStrategy: UrlPathStrategy.path,
@@ -34,7 +36,7 @@ class AppRouter {
             child: const MainPage(),
             state: state,
           ),
-          redirect: (state) => _authMiddleWare(context.read()),
+          redirect: (state) => _authMiddleWare(state, context.read()),
         ),
         GoRoute(
           name: signup,
@@ -61,7 +63,7 @@ class AppRouter {
             child: const CreateTemplatePage(),
             state: state,
           ),
-          redirect: (state) => _authMiddleWare(context.read()),
+          redirect: (state) => _authMiddleWare(state, context.read()),
         ),
         GoRoute(
           path: "/edit/:id",
@@ -69,7 +71,7 @@ class AppRouter {
             child: EditTemplatePage(state.params["id"]!),
             state: state,
           ),
-          redirect: (state) => _authMiddleWare(context.read()),
+          redirect: (state) => _authMiddleWare(state, context.read()),
         ),
         GoRoute(
           name: playground,
@@ -78,18 +80,60 @@ class AppRouter {
             child: const PlaygroundPage(),
             state: state,
           ),
-          redirect: (state) => _authMiddleWare(context.read()),
+          redirect: (state) => _authMiddleWare(state, context.read()),
+        ),
+        GoRoute(
+          name: passwordRecovery,
+          path: "/recovery",
+          pageBuilder: (context, state) => materialPage(
+            child: PasswordResetPage(
+              state.queryParams["access_token"],
+              userUpdate: (state.extra as Map<String, dynamic>?)
+                      ?.containsKey("user_update") ==
+                  true,
+            ),
+            state: state,
+          ),
+          redirect: (state) => _checkRecoveryToken(state),
         ),
       ],
     );
   }
 
-  static String? _authMiddleWare(AuthRepository repository) {
+  static String? _authMiddleWare(
+    GoRouterState state,
+    AuthRepository repository,
+  ) {
     final uri = Uri.parse(Uri.base.toString().replaceFirst("/#", "?"));
+    /**
+     * Check only redirect link can pass condition
+     */
+    if (uri.queryParameters['type'] == 'recovery' &&
+        !Uri.base.queryParameters.containsKey("type")) {
+      return "/recovery?" + uri.query;
+    }
     return repository.currentUser() == null ? ("/login?" + uri.query) : null;
   }
 
   static String? _loggedInMiddleWare(AuthRepository repository) {
     return repository.currentUser() != null ? "/" : null;
+  }
+
+  static String? _checkRecoveryToken(GoRouterState state) {
+    final keyCheck = [
+      "access_token",
+      "refresh_token",
+      "expires_in",
+      "token_type",
+      "type",
+    ];
+    if (state.queryParams.containsKeys(keyCheck) &&
+            state.queryParams["type"] == "recovery" ||
+        state.queryParams.isEmpty ||
+        (state.extra as Map<String, dynamic>?)?.containsKey("user_update") ==
+            true) {
+      return null;
+    }
+    return "/login";
   }
 }

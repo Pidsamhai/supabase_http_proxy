@@ -21,7 +21,7 @@ class PlayGroundRepository {
       final options = RequestOptions(
         method: playGroundTemplate.method,
         path: playGroundTemplate.path,
-        baseUrl: "$baseApiUrl${playGroundTemplate.template.uid}",
+        baseUrl: "$baseApiUrl${playGroundTemplate.template.uid}/template/",
         // headers: playGroundTemplate.template.headers,
         // queryParameters: playGroundTemplate.template.params,
       );
