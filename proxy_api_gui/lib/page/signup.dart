@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:proxy_api_gui/cubit/basic_state.dart';
 import 'package:proxy_api_gui/cubit/signup_cubit.dart';
-import 'package:proxy_api_gui/cubit/login_state.dart';
 import 'package:proxy_api_gui/widget/confirmation_email.dart';
 
 class SignupPage extends StatefulWidget {
@@ -39,18 +39,18 @@ class _SignupPageState extends State<SignupPage> {
     _login() => _cubit.signup(_email, _password);
 
     return Scaffold(
-      body: BlocConsumer<SignUpCubit, LoginState>(
+      body: BlocConsumer<SignUpCubit, BasicState>(
         bloc: _cubit,
-        listenWhen: (previous, current) => current is LoginSuccess,
+        listenWhen: (previous, current) => current is SuccessState,
         listener: (context, state) {
-          if (state is LoginSuccess) {
+          if (state is SuccessState) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("Confirmation email sent.")),
             );
           }
         },
         builder: (context, state) {
-          if (state is LoginSuccess) {
+          if (state is SuccessState) {
             return const ConfirmationEmailWidget();
           }
           return Padding(
@@ -100,11 +100,11 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                     ),
                     const SizedBox.square(dimension: 16),
-                    if (state is LoginFailure) ...[
+                    if (state is FailureState) ...[
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          "* ${state.message}",
+                          "* ${state.msg}",
                           style: const TextStyle(color: Colors.red),
                         ),
                       ),
@@ -119,7 +119,7 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                     ),
                     const SizedBox.square(dimension: 4),
-                    if (state is LoginLoading) ...[
+                    if (state is LoadingState) ...[
                       const LinearProgressIndicator(),
                     ],
                   ],

@@ -2,6 +2,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:proxy_api_gui/cubit/basic_state.dart';
 import 'package:proxy_api_gui/cubit/send_password_reset_cubit.dart';
 import 'package:proxy_api_gui/cubit/update_password_cubit.dart';
 import 'package:go_router/go_router.dart';
@@ -89,11 +90,11 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
   }
 
   Widget _newPasswordContent(BuildContext context) {
-    return BlocBuilder<UpdatePasswordCubit, UpdatePasswordState>(
+    return BlocBuilder<UpdatePasswordCubit, BasicState>(
       bloc: _cubit,
       builder: (context, state) {
-        final bool _isLoading = state is UpdatePasswordLoading;
-        if (state is UpdatePasswordSuccess) {
+        final bool _isLoading = state is LoadingState;
+        if (state is SuccessState) {
           if (widget.userUpdate) {
             return _updateSuccessBackToMain();
           }
@@ -126,7 +127,7 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
                 child: const Text("Save"),
               ),
             ),
-            if (state is UpdatePasswordFail) ...[
+            if (state is FailureState) ...[
               const SizedBox.square(dimension: 8),
               Text(
                 state.msg,
@@ -216,11 +217,11 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
       _cubit.sendPasswordResetEmail(_emailController.text);
     }
 
-    return BlocBuilder<SendPasswordResetCubit, SendPasswordResetState>(
+    return BlocBuilder<SendPasswordResetCubit, BasicState>(
       bloc: _cubit,
       builder: (context, state) {
-        bool _isLoading = state is SendPasswordResetLoading;
-        if (state is SendPasswordResetSuccess) {
+        bool _isLoading = state is LoadingState;
+        if (state is SuccessState) {
           return _sendSuccess();
         }
         return Form(
@@ -257,7 +258,7 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
                 const SizedBox.square(dimension: 16),
                 const LinearProgressIndicator()
               ],
-              if (state is SendPasswordResetFail) ...[
+              if (state is FailureState) ...[
                 const SizedBox.square(dimension: 16),
                 Text(
                   state.msg,
