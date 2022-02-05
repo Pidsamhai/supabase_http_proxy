@@ -8,6 +8,8 @@ const TextStyle labelLage = TextStyle(
 
 final ButtonStyle elevatedButtonStyle = ElevatedButton.styleFrom(
   elevation: 0,
+  padding: const EdgeInsets.only(left: 24, right: 24),
+  minimumSize: const Size(64, 40),
   shape: const RoundedRectangleBorder(
     borderRadius: BorderRadius.all(Radius.circular(100)),
   ),
@@ -47,3 +49,44 @@ final ButtonStyle actionButtonStyle = TextButton.styleFrom(
   minimumSize: const Size(0, 40),
   primary: Colors.black,
 );
+
+AppBarTheme appBarTheme(BuildContext context) => AppBarTheme(
+      color: Colors.white,
+      elevation: 0,
+      centerTitle: false,
+      titleTextStyle: Theme.of(context)
+          .textTheme
+          .headline5
+          ?.copyWith(color: Colors.black, fontWeight: FontWeight.bold),
+    );
+
+final ButtonStyle textButtonStyle = TextButton.styleFrom(
+  padding: const EdgeInsets.only(left: 12, right: 12),
+  minimumSize: const Size(64, 40),
+  shape: const RoundedRectangleBorder(
+    borderRadius: BorderRadius.all(Radius.circular(100)),
+  ),
+);
+
+ThemeData appThemeData(BuildContext context) {
+  return ThemeData.from(colorScheme: const ColorScheme.light()).copyWith(
+    elevatedButtonTheme: ElevatedButtonThemeData(style: elevatedButtonStyle),
+    textButtonTheme: TextButtonThemeData(style: textButtonStyle),
+    cardTheme: CardTheme(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+    ),
+    floatingActionButtonTheme: const FloatingActionButtonThemeData(
+      elevation: 0,
+      highlightElevation: 4,
+      hoverElevation: 2,
+      extendedTextStyle: TextStyle(color: Colors.white),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(16)),
+      ),
+    ),
+    dialogTheme: dialogTheme,
+    appBarTheme: appBarTheme(context),
+  );
+}
