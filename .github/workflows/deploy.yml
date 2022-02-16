@@ -4,19 +4,28 @@ on:
     tags:
       - '*'
 jobs:
-  deploy_heroku_app:
+  build_node_app:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: functions
     steps:
-      - uses: actions/checkout@v2
-      - uses: akhileshns/heroku-deploy@v3.12.12
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@v2
         with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "supabase-proxy-api"
-          heroku_email: ${{secrets.HEROKU_EMAIL}}
-          appdir: functions
+          node-version: '14'
+      - name: Install Dependencies
+        run: npm install
+      - name: Build Node App
+        run: npm run build
 
-  deploy_web_app:
-    needs: deploy_heroku_app
+      - uses: actions/upload-artifact@v2
+        with:
+          name: node_app
+          path: functions/lib/
+
+  build_web_app:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -47,18 +56,67 @@ jobs:
         SUPABASE_KEY: "${{ secrets.SUPABASE_KEY }}"
         AUTH_REDIRECT_URL: "${{ secrets.AUTH_REDIRECT_URL }}"
 
-    - name: Build web
+    - name: Build github page
       run: |
         flutter build web --release --base-href /$BASE_HREF/ --web-renderer html
         cp build/web/index.html build/web/404.html
       env:
         BASE_HREF: ${{ github.event.repository.name }}
 
-    - name: Deploy to Github page
-      uses: s0/git-publish-subdir-action@develop
-      env:
-        REPO: self
-        BRANCH: gh-page
-        FOLDER: proxy_api_gui/build/web
-        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-        MESSAGE: "🚀 deploy commit {sha} "
+    - uses: actions/upload-artifact@v2
+      with:
+        name: gh_page_app
+        path: proxy_api_gui/build/web/
+
+    - name: Build vercel web
+      run: flutter build web --release --web-renderer html
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: vercel_app
+        path: proxy_api_gui/build/web/
+
+  deploy:
+    needs: [build_node_app, build_web_app]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Download Gihub Page artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: gh_page_app
+          path: gh_page/
+
+      - name: Download Node App artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: node_app
+          path: functions/lib/
+
+      - name: Download Vercel App artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: vercel_app
+          path: functions/public/
+      
+      - name: Deploy to Github page
+        uses: s0/git-publish-subdir-action@develop
+        env:
+          REPO: self
+          BRANCH: gh-page
+          FOLDER: gh_page
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          MESSAGE: "🚀 deploy commit {sha} "
+
+      - name: Deploy node to vercel
+        uses: amondnet/vercel-action@v20
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }} 
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          vercel-args: '--prod' #Force production, when supabase support wildcard redirect will set to dev
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./functions
+          github-comment: true
+          alias-domains: supabase-proxy-api.vercel.app
