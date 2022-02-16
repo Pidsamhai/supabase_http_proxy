@@ -5,7 +5,7 @@ import * as dotenv from "dotenv";
 import ApiRoute from "./route/api";
 import UserRoute from "./route/user";
 import TemplateRoute from "./route/template";
-import NotFound from "./route/not-found";
+import * as path from "path";
 
 dotenv.config();
 
@@ -19,10 +19,14 @@ const limiter = rateLimit({
 });
 
 server.use(cors());
-server.use(limiter);
-
+server.use("/api/v1/*", limiter);
 server.use("/api/v1", [ApiRoute, TemplateRoute, UserRoute]);
-server.use(NotFound);
+server.use(express.static(path.resolve(__dirname, "..", "public")));
+
+// Handle not found
+server.get("*", function (_req, res) {
+  res.sendFile(path.resolve(__dirname, "..", "public/index.html"));
+});
 
 server.listen(port, () => {
   console.log("\x1b[36m", `Live on http://127.0.0.1:${port}`);
