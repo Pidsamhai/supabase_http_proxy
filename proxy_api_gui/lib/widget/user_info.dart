@@ -28,52 +28,48 @@ class _UserInfoWidgetState extends State<UserInfoWidget> {
   final TextEditingController nameController = TextEditingController();
   bool get _isMatchUid => uidController.text == user?.id;
 
+  _rebuilder() => setState(() {});
+
   @override
   void initState() {
     super.initState();
     user = context.read<AuthRepository>().currentUser();
     metadata = user?.userMetadataClass();
-    uidController.addListener(() => setState(() {}));
+    uidController.addListener(_rebuilder);
   }
 
   Future<void> _deleteAccount() async {
     if (!preDeleteAccount) {
-      setState(() {
-        preDeleteAccount = true;
-        preUpdateUserInfo = false;
-      });
+      preDeleteAccount = true;
+      preUpdateUserInfo = false;
+      _rebuilder();
       return;
     }
-    setState(() {
-      isLoading = true;
-    });
+    isLoading = true;
+    _rebuilder();
     await context.read<AuthRepository>().deleteAccount();
-    setState(() {
-      isLoading = false;
-    });
+    isLoading = false;
+    _rebuilder();
     context.goNamed(AppRouter.login);
   }
 
   Future<void> _updateUserInfo() async {
     if (!preUpdateUserInfo) {
-      setState(() {
-        preUpdateUserInfo = true;
-        preDeleteAccount = false;
-      });
+      preUpdateUserInfo = true;
+      preDeleteAccount = false;
+      _rebuilder();
       return;
     }
-    setState(() {
-      isLoading = true;
-    });
+    isLoading = true;
+    _rebuilder();
     final email = Email(
       fullName: fullNameController.text,
       name: nameController.text,
     );
     await context.read<AuthRepository>().updateEmailMetadata(email);
-    setState(() {
-      isLoading = false;
-      preUpdateUserInfo = false;
-    });
+    isLoading = false;
+    preUpdateUserInfo = false;
+    _rebuilder();
   }
 
   _navigateToUserUpdatePassword() {
