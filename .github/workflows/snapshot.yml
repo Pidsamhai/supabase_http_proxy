@@ -5,7 +5,7 @@ on:
       - 'main'
       - 'dev'
 jobs:
-  deploy_snapshot_node_app:
+  build_node_app:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -16,67 +16,84 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
-
       - name: Install Dependencies
         run: npm install
       - name: Build Node App
         run: npm run build
 
-      - name: Deploy node to vercel
-        uses: amondnet/vercel-action@v20
+      - uses: actions/upload-artifact@v2
         with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }} 
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          vercel-args: '--prod' #Force production, when supabase support wildcard redirect will set to dev
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          working-directory: ./functions
-          github-comment: true
+          name: node_app
+          path: functions/lib/
 
-  deploy_snapshot_web_app:
-    needs: deploy_snapshot_node_app
+  build_web_app:
     runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
         working-directory: proxy_api_gui
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
-        with:
-          java-version: '11'
-      - uses: subosito/flutter-action@v1
-        with:
-          flutter-version: '2.8.1'
-          channel: 'stable'
-          
-      - name: Install dependencies
-        run: flutter pub get
-      
-      - name: Create env file
-        run: |
-          echo BASE_API_URL=$BASE_API_URL >> env.txt
-          echo SUPABASE_API_URL=$SUPABASE_API_URL >> env.txt
-          echo SUPABASE_KEY=$SUPABASE_KEY >> env.txt
-          echo AUTH_REDIRECT_URL=$AUTH_REDIRECT_URL >> env.txt
-        env:
-          BASE_API_URL: "${{ secrets.BASE_API_URL_DEV }}"
-          SUPABASE_API_URL: "${{ secrets.SUPABASE_API_URL }}"
-          SUPABASE_KEY: "${{ secrets.SUPABASE_KEY }}"
-          AUTH_REDIRECT_URL: "${{ secrets.AUTH_REDIRECT_URL_DEV }}"
-
-      - name: Build web
-        run: flutter build web --release --web-renderer canvaskit
+    - uses: actions/checkout@v2
+    - uses: actions/setup-java@v1
+      with:
+        java-version: '11'
+    - uses: subosito/flutter-action@v1
+      with:
+        flutter-version: '2.8.1'
+        channel: 'stable'
+        
+    - name: Install dependencies
+      run: flutter pub get
     
-      - name: Deploy flutter to vercel
+    - name: Create env file
+      run: |
+        echo BASE_API_URL=$BASE_API_URL >> env.txt
+        echo SUPABASE_API_URL=$SUPABASE_API_URL >> env.txt
+        echo SUPABASE_KEY=$SUPABASE_KEY >> env.txt
+        echo AUTH_REDIRECT_URL=$AUTH_REDIRECT_URL >> env.txt
+      env:
+        BASE_API_URL: "${{ secrets.BASE_API_URL_DEV }}"
+        SUPABASE_API_URL: "${{ secrets.SUPABASE_API_URL }}"
+        SUPABASE_KEY: "${{ secrets.SUPABASE_KEY }}"
+        AUTH_REDIRECT_URL: "${{ secrets.AUTH_REDIRECT_URL_DEV }}"
+
+    - name: Build web
+      run: flutter build web --release --web-renderer canvaskit
+  
+    - uses: actions/upload-artifact@v2
+      with:
+        name: web_app
+        path: proxy_api_gui/build/web/
+
+  deploy_snapshot_node_app:
+    needs: [build_node_app, build_web_app]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: functions
+    steps:
+      - uses: actions/checkout@master
+        
+      - name: Download Web App artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: web_app
+          path: functions/public/
+
+      - name: Download Node App artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: node_app
+          path: functions/lib/
+
+      - name: Deploy node to vercel
         uses: amondnet/vercel-action@v20
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }} 
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          vercel-args: '--prod' #Force production, when supabase support wildcard redirect will set to dev
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID_UI}}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID_UI}}
-          working-directory: ./proxy_api_gui/build/web
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./functions
           github-comment: true
-
-
+          alias-domains: supabase-proxy-api-snapshot.vercel.app
