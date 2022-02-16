@@ -58,7 +58,7 @@ jobs:
 
     - name: Build github page
       run: |
-        flutter build web --release --base-href /$BASE_HREF/ --web-renderer html
+        flutter build web --release --base-href /$BASE_HREF/ --web-renderer canvaskit
         cp build/web/index.html build/web/404.html
       env:
         BASE_HREF: ${{ github.event.repository.name }}
@@ -69,7 +69,7 @@ jobs:
         path: proxy_api_gui/build/web/
 
     - name: Build vercel web
-      run: flutter build web --release --web-renderer html
+      run: flutter build web --release --web-renderer canvaskit
 
     - uses: actions/upload-artifact@v2
       with:
