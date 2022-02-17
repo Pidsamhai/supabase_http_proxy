@@ -158,7 +158,7 @@ class _PlaygroundPageState extends State<PlaygroundPage>
                 controller: _urlScrollController,
                 scrollDirection: Axis.horizontal,
                 child: _selected != null
-                    ? Text("URL : $baseApiUrl${_selected!.uid}")
+                    ? Text("URL : $baseTemplateUrl${_selected!.uid}")
                     : null,
               ),
             ),
