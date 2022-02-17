@@ -24,9 +24,9 @@ class _TemplateCardState extends State<TemplateCard> {
   _onEnter() => setState(() => elevation = 8);
   _onExit() => setState(() => elevation = 0);
 
-  _copyUrl(BuildContext context) {
+  _copyUrl() {
     Clipboard.setData(
-        ClipboardData(text: "$baseApiUrl${widget._template.uid}"));
+        ClipboardData(text: "$baseTemplateUrl${widget._template.uid}"));
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Copy url to clipboard")),
     );
@@ -85,7 +85,7 @@ class _TemplateCardState extends State<TemplateCard> {
                   ),
                   IconButton(
                     icon: const Icon(Icons.copy),
-                    onPressed: () => _copyUrl(context),
+                    onPressed: () => _copyUrl(),
                   )
                 ],
               )
