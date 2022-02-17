@@ -6,6 +6,7 @@ import ApiRoute from "./route/api";
 import UserRoute from "./route/user";
 import TemplateRoute from "./route/template";
 import * as path from "path";
+import Notfound from "./route/not-found";
 
 dotenv.config();
 
@@ -19,11 +20,16 @@ const limiter = rateLimit({
 });
 
 server.use(cors());
-server.use("/api/v1/*", limiter);
+
+// Handler rate limit and not found in api route
+server.use("/api/v1/*", [limiter, Notfound]);
+
 server.use("/api/v1", [ApiRoute, TemplateRoute, UserRoute]);
+
+// Handler web app static file
 server.use(express.static(path.resolve(__dirname, "..", "public")));
 
-// Handle not found
+// Handler not found when direct access from url
 server.get("*", function (_req, res) {
   res.sendFile(path.resolve(__dirname, "..", "public/index.html"));
 });
