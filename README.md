@@ -48,7 +48,7 @@ $ npm i
 * run
 
 ```bash
-$ npm run serve
+$ npm run start
 ```
 
 * build

@@ -3,9 +3,8 @@
   "scripts": {
     "lint": "eslint --ext .js,.ts .",
     "build": "tsc",
-    "watch": "tsc --watch",
-    "serve": "npm run watch | nodemon",
-    "start": "node ./lib/index.js"
+    "serve": "vercel dev",
+    "start": "nodemon"
   },
   "main": "lib/index.js",
   "engines": {
@@ -29,6 +28,8 @@
     "eslint": "^8.7.0",
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-import": "^2.25.4",
+    "nodemon": "^2.0.15",
+    "ts-node": "^10.5.0",
     "typescript": "^4.5.5"
   },
   "private": true
