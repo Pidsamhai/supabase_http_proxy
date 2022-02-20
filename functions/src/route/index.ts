@@ -17,7 +17,7 @@ route.use("/api/v1/user", deleteUserRoute);
 route.use("/api/*", notFoundController);
 
 // Handler web app static file
-// route.use(express.static(path.resolve(__dirname, "..", "..", "public")));
+route.use(express.static(path.resolve(__dirname, "..", "..", "public")));
 
 // Handler not found when direct access from url
 route.get("*", web404Controller);
