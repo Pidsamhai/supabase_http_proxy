@@ -12,8 +12,10 @@
     </a>
 </p>
 
-* Stable Link https://pidsamhai.github.io/supabase_http_proxy/
-* Snapshot Link https://supabase-proxy-api-gui.vercel.app/
+* Stable Link
+    * https://pidsamhai.github.io/supabase_http_proxy/
+    * https://supabase-proxy-api.vercel.app/
+* Snapshot Link https://supabase-proxy-api-snapshot.vercel.app
 
 ### Build flutter app
 
