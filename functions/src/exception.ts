@@ -18,4 +18,11 @@ class UserNotFound extends Error {
   }
 }
 
-export { TemplateNotFound, UserNotFound };
+class TokenExpired extends Error {
+  constructor() {
+    super();
+    this.message = "Token has been expired";
+  }
+}
+
+export { TemplateNotFound, UserNotFound, TokenExpired };

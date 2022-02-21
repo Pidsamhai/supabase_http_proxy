@@ -50,8 +50,11 @@ class AuthRepository {
   Future<bool> deleteAccount() async {
     try {
       final baseUrl = dotenv.env["BASE_API_URL"]!;
-      final userId = currentUser()!.id;
-      final response = await http.delete(Uri.parse("$baseUrl/user/$userId"));
+      final headers = {"authorization": "Beer " + _auth.session()!.accessToken};
+      final response = await http.delete(
+        Uri.parse("${baseUrl}user"),
+        headers: headers,
+      );
       await _auth.signOut();
       return response.statusCode == 204;
     } catch (e) {
