@@ -17,7 +17,7 @@ export default async function (req: Request, res: Response): Promise<void> {
     res.sendStatus(204);
   } catch (error: any) {
     if (error.name == "JwtParseError" || error instanceof TokenExpired) {
-      res.status(403).json({ message: "Unauthorized" });
+      res.status(401).json({ message: "Unauthorized" });
       return;
     }
     if (error instanceof UserNotFound) {
