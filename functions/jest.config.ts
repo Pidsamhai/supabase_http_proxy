@@ -4,4 +4,5 @@ export default {
   testEnvironment: "node",
   setupFilesAfterEnv: ["./jest.setup.ts"],
   modulePathIgnorePatterns: ["./lib/"],
+  coveragePathIgnorePatterns: [".mock.ts"],
 };

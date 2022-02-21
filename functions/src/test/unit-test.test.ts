@@ -7,6 +7,15 @@ import { TemplateNotFound, UserNotFound } from "../exception";
 import { Template } from "../types/template";
 import axios from "axios";
 import { Request, Response } from "express";
+import {
+  ALIVE_JWT_TOKEN,
+  JWT_SECRET,
+  EXPIRED_JWT_TOKEN,
+} from "./fake-jwt.mock";
+
+beforeAll(() => {
+  process.env.JWT_SECRET = JWT_SECRET;
+});
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -132,13 +141,14 @@ test("GET /api/v1/template/random/todo/1 should be not found unknown error (404)
     });
 });
 
-test("DELETE /api/v1/user/1234 should error User not found (404)", (done) => {
+test("DELETE /api/v1/user should error User not found (404)", (done) => {
   jest.spyOn(supabaseService, "deleteUser").mockImplementation((id) => {
     throw new UserNotFound();
   });
   request(server(route))
-    .delete("/api/v1/user/1234")
+    .delete("/api/v1/user")
     .expect("Content-Type", /json/)
+    .set("Authorization", "Bearer " + ALIVE_JWT_TOKEN)
     .expect(404)
     .expect((res) => {
       expect(res.body).toStrictEqual({ message: "User not found" });
@@ -149,13 +159,14 @@ test("DELETE /api/v1/user/1234 should error User not found (404)", (done) => {
     });
 });
 
-test("DELETE /api/v1/user/1234 unknown error should be Delete error (410)", (done) => {
+test("DELETE /api/v1/user unknown error should be Delete error (410)", (done) => {
   jest.spyOn(supabaseService, "deleteUser").mockImplementation((id) => {
     throw new Error("Random error");
   });
   request(server(route))
-    .delete("/api/v1/user/1234")
+    .delete("/api/v1/user")
     .expect("Content-Type", /json/)
+    .set("Authorization", "Bearer " + ALIVE_JWT_TOKEN)
     .expect(410)
     .expect((res) => {
       expect(res.body).toStrictEqual({ message: "Delete error" });
@@ -166,13 +177,28 @@ test("DELETE /api/v1/user/1234 unknown error should be Delete error (410)", (don
     });
 });
 
-test("DELETE /api/v1/user/1234 should be success (204)", (done) => {
+test("DELETE /api/v1/user should be success (204)", (done) => {
   jest.spyOn(supabaseService, "deleteUser").mockImplementation(async (id) => {
     return;
   });
   request(server(route))
-    .delete("/api/v1/user/1234")
+    .delete("/api/v1/user")
+    .set("Authorization", "Bearer " + ALIVE_JWT_TOKEN)
     .expect(204)
+    .end(function (err, _res) {
+      if (err) return done(err);
+      return done();
+    });
+});
+
+test("DELETE /api/v1/user expired_token should throw TokenExpired (204)", (done) => {
+  jest.spyOn(supabaseService, "deleteUser").mockImplementation(async (id) => {
+    return;
+  });
+  request(server(route))
+    .delete("/api/v1/user")
+    .set("Authorization", "Bearer " + EXPIRED_JWT_TOKEN)
+    .expect(401)
     .end(function (err, _res) {
       if (err) return done(err);
       return done();
