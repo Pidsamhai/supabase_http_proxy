@@ -191,7 +191,7 @@ test("DELETE /api/v1/user should be success (204)", (done) => {
     });
 });
 
-test("DELETE /api/v1/user expired_token should throw TokenExpired (204)", (done) => {
+test("DELETE /api/v1/user expired_token should throw TokenExpired (401)", (done) => {
   jest.spyOn(supabaseService, "deleteUser").mockImplementation(async (id) => {
     return;
   });
